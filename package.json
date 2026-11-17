@@ -1,0 +1,13 @@
+{
+  "name": "smart-parking-upi-revisi",
+  "version": "1.0.0",
+  "description": "Prototipe Smart Parking UPI Tasikmalaya tanpa database",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}

@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Dashboard | Smart Parking</title>
+    <link rel="stylesheet" href="/global.css" />
+
+    <style>
+      :root {
+        --area-a: #20c4d0;
+        --area-b: #ff8a32;
+        --area-c: #4798f5;
+        --area-d: #50b85a;
+        --area-e: #a875e8;
+        --area-f: #ffd43b;
+        --area-g: #ff7188;
+      }
+
+      /* EMPAT KARTU RINGKASAN */
+      .dashboard-summary {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin: 22px 0 30px;
+      }
+
+      .summary-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+        padding: 16px;
+        background: var(--card-bg, #fff);
+        border: 1px solid var(--border, #e5e7eb);
+        border-radius: 13px;
+        box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06);
+      }
+
+      .summary-icon {
+        width: 42px;
+        height: 42px;
+        flex: 0 0 42px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        font-size: 21px;
+      }
+
+      .summary-icon.blue {
+        color: #1683ed;
+        background: #e2efff;
+      }
+
+      .summary-icon.green {
+        color: #08a66a;
+        background: #d9f8e9;
+      }
+
+      .summary-icon.orange {
+        color: #e99400;
+        background: #fff0ce;
+      }
+
+      .summary-icon.purple {
+        color: #7155ed;
+        background: #eee9ff;
+      }
+
+      .summary-label {
+        color: #64748b;
+        font-size: 11px;
+        margin-bottom: 3px;
+      }
+
+      .summary-value {
+        font-size: 21px;
+        font-weight: 700;
+        color: var(--text-color, #172033);
+        line-height: 1.2;
+      }
+
+      .summary-unit {
+        font-size: 11px;
+        color: #64748b;
+        font-weight: 400;
+      }
+
+      .summary-status {
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+
+      .summary-status.available {
+        color: #08b46a;
+      }
+
+      .summary-status.warning {
+        color: #e99a12;
+      }
+
+      .summary-status.full {
+        color: #e54848;
+      }
+
+      .summary-status.no-data {
+        color: #64748b;
+      }
+
+      /* JARAK ANTAR CARD */
+      .dashboard-summary {
+        margin-bottom: 30px;
+      }
+
+      .parking-dashboard-card {
+        margin-top: 0;
+        margin-bottom: 18px;
+      }
+
+      /* DIAGRAM DONAT COMPACT */
+      .parking-area-grid {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .parking-area-card {
+        min-width: 0;
+        padding: 10px 7px;
+        border: 1px solid #e5eaf0;
+        border-radius: 12px;
+        background: var(--card-bg, #fff);
+        box-shadow: 0 3px 10px rgba(15, 23, 42, 0.04);
+      }
+
+      .parking-area-heading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 4px;
+        margin-bottom: 9px;
+        border-radius: 8px;
+        background: var(--area-tint, #f1f5f9);
+      }
+
+      .parking-area-heading h3 {
+        margin: 0;
+        font-size: 13px;
+        color: #172b4d;
+        text-align: center;
+      }
+
+      .parking-status {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        padding: 4px 7px;
+        border-radius: 20px;
+        color: #fff;
+        font-size: 9px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .parking-status.available {
+        background: #16b978;
+      }
+
+      .parking-status.near-full {
+        background: #eab308;
+        color: #422006;
+      }
+
+      .parking-status.full {
+        background: #ef4444;
+      }
+
+      .parking-status.no-data {
+        background: #64748b;
+      }
+
+      .parking-area-summary {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 0;
+      }
+
+      .parking-donut {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: 72px;
+        height: 72px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: conic-gradient(
+          var(--parking-color) var(--parking-percent),
+          #e2e8f0 var(--parking-percent)
+        );
+      }
+
+      .parking-donut::before {
+        content: "";
+        position: absolute;
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: var(--card-bg, #fff);
+      }
+
+      .parking-donut-center {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+      }
+
+      .parking-donut-center strong {
+        display: block;
+        font-size: 14px;
+        color: #172b4d;
+      }
+
+      .parking-donut-center small {
+        font-size: 8px;
+        color: #64748b;
+      }
+
+      .parking-area-details {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .parking-detail-row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        padding: 5px 0;
+        border-bottom: 1px solid #edf0f4;
+        font-size: 10px;
+        text-align: center;
+      }
+
+      .parking-detail-row span {
+        color: #64748b;
+      }
+
+      .parking-detail-row strong {
+        color: #172b4d;
+        text-align: center;
+        overflow-wrap: anywhere;
+        font-size: 10px;
+      }
+
+      /* JUDUL DIAGRAM DAN TOMBOL */
+      .parking-dashboard-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .parking-dashboard-heading .table-title {
+        margin-bottom: 5px;
+      }
+
+      /* DENAH DAN DIAGRAM BATANG */
+      .dashboard-lower {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 16px;
+        align-items: stretch;
+      }
+
+      .dashboard-lower > .card {
+        min-width: 0;
+        height: 100%;
+        min-height: 0;
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+
+      .dashboard-lower > .card:first-child,
+      .dashboard-lower > .card:nth-child(2) {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .area-map-small {
+        width: 100%;
+        max-width: 430px;
+        margin: 0 auto;
+      }
+
+      .area-map-small img,
+      .area-map-small svg,
+      .area-map-small canvas {
+        max-width: 100%;
+        height: auto;
+      }
+
+      /* LEGENDA DENAH */
+      .map-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 12px;
+        margin-top: 12px;
+      }
+
+      .map-legend-item {
+        display: inline-flex;
+        align-items: center;
+        font-size: 12px;
+      }
+
+      .area-color {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        margin-right: 5px;
+        border-radius: 3px;
+        flex-shrink: 0;
+      }
+
+      .area-a {
+        background: var(--area-a);
+      }
+
+      .area-b {
+        background: var(--area-b);
+      }
+
+      .area-c {
+        background: var(--area-c);
+      }
+
+      .area-d {
+        background: var(--area-d);
+      }
+
+      .area-e {
+        background: var(--area-e);
+      }
+
+      .area-f {
+        background: var(--area-f);
+      }
+
+      .area-g {
+        background: var(--area-g);
+      }
+
+      /* GRAFIK BATANG - AREA A-G RATA DAN SKALA 0-30 */
+      #capacityChart.bar-chart {
+        width: 100%;
+        min-width: 0;
+        flex: 1;
+        overflow: hidden;
+        box-sizing: border-box;
+      }
+
+      #capacityChart .vertical-chart-scroll {
+        width: 100%;
+        height: 100%;
+        min-height: 300px;
+        overflow: hidden;
+        padding: 12px 8px 28px 0;
+        box-sizing: border-box;
+      }
+
+      #capacityChart .vertical-chart {
+        display: flex;
+        width: 100%;
+        min-width: 0;
+        height: 100%;
+        min-height: 260px;
+        box-sizing: border-box;
+      }
+
+      #capacityChart .chart-y-axis {
+        width: 42px;
+        flex: 0 0 42px;
+        height: 220px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding-right: 8px;
+        box-sizing: border-box;
+      }
+
+      #capacityChart .chart-y-label {
+        font-size: 10px;
+        line-height: 1;
+        color: var(--muted, #84909f);
+        text-align: right;
+        transform: translateY(-50%);
+      }
+
+      #capacityChart .chart-plot {
+        position: relative;
+        height: 220px;
+        min-width: 0;
+        width: 0;
+        flex: 1 1 0;
+        border-bottom: 1px solid #dce2e8;
+        box-sizing: border-box;
+      }
+
+      #capacityChart .chart-grid-lines {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        pointer-events: none;
+      }
+
+      #capacityChart .chart-grid-line {
+        width: 100%;
+        border-top: 1px dashed #e5eaf0;
+      }
+
+      #capacityChart .chart-bars {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: stretch;
+        gap: 0;
+        width: 100%;
+        min-width: 0;
+        height: 100%;
+      }
+
+      #capacityChart .chart-bar-item {
+        position: relative;
+        width: 0;
+        min-width: 0;
+        height: 100%;
+        flex: 1 1 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #capacityChart .chart-bar-area {
+        position: relative;
+        height: 100%;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+      }
+
+      #capacityChart .chart-bar {
+        width: 26px;
+        max-width: 70%;
+        min-height: 0;
+        border-radius: 2px 2px 0 0;
+        transition: height 0.3s ease;
+      }
+
+      #capacityChart .chart-bar-value {
+        position: absolute;
+        font-size: 10px;
+        line-height: 1;
+        color: var(--text-color, #374151);
+        white-space: nowrap;
+        transform: translateY(-4px);
+      }
+
+      #capacityChart .chart-x-label {
+        position: absolute;
+        top: calc(100% + 12px);
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 11px;
+        color: var(--text-color, #374151);
+        white-space: nowrap;
+      }
+
+      #capacityChart .chart-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 8px;
+        font-size: 12px;
+      }
+
+      #capacityChart .chart-legend .legend-filled {
+        color: #64748b;
+      }
+
+      /* LEGENDA STATUS PARKIR */
+      .parking-legend {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 18px;
+        margin-top: 18px;
+        font-size: 16px;
+        color: #64748b;
+      }
+
+      .parking-legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .parking-legend i {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+        border-radius: 50%;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 1100px) {
+        .dashboard-summary {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .parking-area-grid {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 700px) {
+        .dashboard-lower {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .dashboard-lower > .card {
+          height: auto;
+        }
+
+        .vertical-chart-scroll {
+          min-height: 300px;
+        }
+
+        .parking-area-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 420px) {
+        .parking-area-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .parking-dashboard-heading {
+          align-items: flex-start;
+        }
+
+        .summary-card {
+          padding: 12px 9px;
+          gap: 8px;
+        }
+
+        .summary-icon {
+          width: 34px;
+          height: 34px;
+          flex-basis: 34px;
+        }
+
+        .summary-value {
+          font-size: 18px;
+        }
+
+        .summary-status {
+          font-size: 16px;
+        }
+
+        .parking-area-card {
+          padding: 11px;
+        }
+
+        .parking-area-summary {
+          gap: 9px;
+        }
+      }
+    </style>
+  </head>
+
+  <body data-protected="true">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <img class="brand-logo" src="/assets/logo-upi.png" alt="Logo UPI" />
+        <div>
+          <h2>Smart Parking</h2>
+          <p>UPI Tasikmalaya</p>
+        </div>
+      </div>
+
+      <nav class="menu">
+        <a class="active" href="/smart_parking_dashboard.html">
+          <span class="nav-icon">⌂</span>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="/data-parkir.html">
+          <span class="nav-icon">▣</span>
+          <span>Data Parkir</span>
+        </a>
+
+        <a href="/riwayat.html">
+          <span class="nav-icon">◷</span>
+          <span>Riwayat</span>
+        </a>
+
+        <a href="/pengaturan-kamera.html">
+          <span class="nav-icon">◉</span>
+          <span>Pengaturan Kamera</span>
+        </a>
+
+        <a href="/pengaturan-slot.html">
+          <span class="nav-icon">▦</span>
+          <span>Pengaturan Slot</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- KONTEN UTAMA -->
+    <main class="main">
+      <header class="topbar">
+        <div class="time">
+          <span id="clockDate"></span><br />
+          <b id="clock"></b>
+        </div>
+      </header>
+
+      <h1 class="page-title">Dashboard</h1>
+      <p class="subtitle">Monitoring kondisi parkir secara real-time.</p>
+
+      <!-- EMPAT KARTU RINGKASAN -->
+      <div class="dashboard-summary">
+        <div class="summary-card">
+          <div class="summary-icon blue">P</div>
+          <div>
+            <div class="summary-label">Total Kapasitas</div>
+            <div class="summary-value">
+              <span id="capacityCount">-</span>
+              <span class="summary-unit">slot</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-icon green">P</div>
+          <div>
+            <div class="summary-label">Total Terisi</div>
+            <div class="summary-value">
+              <span id="occupiedCount">-</span>
+              <span class="summary-unit">kendaraan</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-icon orange">P</div>
+          <div>
+            <div class="summary-label">Total Tersedia</div>
+            <div class="summary-value">
+              <span id="availableCount">-</span>
+              <span class="summary-unit">slot</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-icon purple">◷</div>
+          <div>
+            <div class="summary-label">Status Keseluruhan</div>
+            <div class="summary-status no-data" id="overallStatus">
+              Memuat...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KONDISI AREA PARKIR -->
+      <section class="card parking-dashboard-card">
+        <div class="parking-dashboard-heading">
+          <div>
+            <h2 class="table-title">Kondisi Area Parkir</h2>
+            <p class="muted">
+              Informasi kapasitas dan keterisian setiap area parkir.
+            </p>
+          </div>
+
+          <a href="/data-parkir.html" class="btn btn-outline">
+            Lihat Data Parkir
+          </a>
+        </div>
+
+        <div id="donutCharts" class="parking-area-grid">
+          <p class="muted">Memuat kondisi area parkir...</p>
+        </div>
+
+        <div class="parking-legend">
+          <span>
+            <i style="background: #16b978"></i>
+            Tersedia (&lt;80%)
+          </span>
+
+          <span>
+            <i style="background: #eab308"></i>
+            Hampir Penuh (80–94%)
+          </span>
+
+          <span>
+            <i style="background: #ef4444"></i>
+            Penuh (≥95%)
+          </span>
+        </div>
+      </section>
+
+      <!-- DENAH DAN DIAGRAM BATANG -->
+      <section class="dashboard-lower">
+        <!-- DENAH AREA PARKIR -->
+        <div class="card">
+          <div class="table-head">
+            <div>
+              <h2 class="table-title">Denah Area Parkir</h2>
+              <p class="muted">Denah dan status kamera A–G.</p>
+            </div>
+
+            <a class="btn btn-outline" href="/pengaturan-kamera.html">
+              Atur Kamera
+            </a>
+          </div>
+
+          <div id="dashboardMap" class="area-map area-map-small">
+            <p class="muted">Memuat denah parkir...</p>
+          </div>
+
+          <div class="map-legend">
+            <span class="map-legend-item">
+              <i class="area-color area-a"></i>Area A
+            </span>
+            <span class="map-legend-item">
+              <i class="area-color area-b"></i>Area B
+            </span>
+            <span class="map-legend-item">
+              <i class="area-color area-c"></i>Area C
+            </span>
+            <span class="map-legend-item">
+              <i class="area-color area-d"></i>Area D
+            </span>
+            <span class="map-legend-item">
+              <i class="area-color area-e"></i>Area E
+            </span>
+            <span class="map-legend-item">
+              <i class="area-color area-f"></i>Area F
+            </span>
+            <span class="map-legend-item">
+              <i class="area-color area-g"></i>Area G
+            </span>
+          </div>
+        </div>
+
+        <!-- DIAGRAM BATANG -->
+        <div class="card">
+          <h2 class="table-title">Diagram Batang per Area</h2>
+          <p class="muted">Jumlah kendaraan terisi pada setiap area.</p>
+
+          <div id="capacityChart" class="bar-chart">
+            <p class="muted">Memuat diagram batang...</p>
+          </div>
+
+          <div class="chart-legend">
+            <span class="legend-filled">■ Jumlah kendaraan terisi</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIWAYAT PARKIR -->
+      <section class="card" style="margin-top: 24px">
+        <div class="table-head">
+          <div>
+            <h2 class="table-title">Tabel Riwayat Kondisi Parkir</h2>
+            <p class="muted">Riwayat perubahan kondisi parkir setiap area.</p>
+          </div>
+
+          <a href="/riwayat.html" class="btn btn-outline"> Lihat Riwayat </a>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Tanggal</th>
+                <th>Waktu</th>
+                <th>Area</th>
+                <th>Kapasitas</th>
+                <th>Terisi</th>
+                <th>Tersedia</th>
+                <th>Status</th>
+                <th>Sumber</th>
+              </tr>
+            </thead>
+
+            <tbody id="historyBody">
+              <tr>
+                <td colspan="9">Memuat riwayat parkir...</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="empty" id="empty">Tidak ada data riwayat parkir.</div>
+        </div>
+      </section>
+
+      <!-- INFORMASI AREA DAN KAPASITAS -->
+      <section class="card" style="margin-top: 24px">
+        <div class="table-head">
+          <div>
+            <h2 class="table-title">Kelola Area dan Kapasitas</h2>
+            <p class="muted">
+              Informasi area, kapasitas, dan status area parkir.
+            </p>
+          </div>
+
+          <a href="/pengaturan-slot.html" class="btn btn-outline">
+            Kelola Area
+          </a>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Area</th>
+                <th>ID</th>
+                <th>Kapasitas</th>
+                <th>Nama</th>
+                <th>Status Area</th>
+              </tr>
+            </thead>
+
+            <tbody id="dashboardSlotRows">
+              <tr>
+                <td colspan="5">Memuat data area...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <p class="footer-note">Smart Parking · UPI Kampus Tasikmalaya</p>
+    </main>
+
+    <!-- TOMBOL KELUAR -->
+    <button
+      class="btn"
+      style="position: fixed; right: 14px; bottom: 14px; z-index: 8"
+      onclick="logoutAdmin()"
+    >
+      Keluar
+    </button>
+
+    <script src="/auth.js"></script>
+    <script src="/app.js"></script>
+
+    <!-- FUNGSI DIAGRAM DONAT DASHBOARD -->
+    <script>
+      window.renderDonuts = function (areas, containerId = "donutCharts") {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const statusColors = {
+          available: "#16b978",
+          nearFull: "#eab308",
+          full: "#ef4444",
+          noData: "#64748b",
+        };
+
+        const areaColors = {
+          A: "#20c4d0",
+          B: "#ff8a32",
+          C: "#4798f5",
+          D: "#50b85a",
+          E: "#a875e8",
+          F: "#ffd43b",
+          G: "#ff7188",
+        };
+
+        function esc(value) {
+          return String(value ?? "").replace(
+            /[&<>"']/g,
+            (c) =>
+              ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;",
+              }[c])
+          );
+        }
+
+        if (!Array.isArray(areas) || !areas.length) {
+          container.innerHTML = '<p class="muted">Belum ada area parkir.</p>';
+          return;
+        }
+
+        const validAreas = areas.filter(
+          (area) =>
+            area.enabled !== false &&
+            area.capacity != null &&
+            area.occupied != null &&
+            Number.isFinite(Number(area.capacity)) &&
+            Number.isFinite(Number(area.occupied)) &&
+            Number(area.capacity) > 0 &&
+            Number(area.occupied) >= 0
+        );
+
+        const totalCapacity = validAreas.reduce(
+          (sum, area) => sum + Number(area.capacity),
+          0
+        );
+
+        const totalOccupied = validAreas.reduce(
+          (sum, area) => sum + Number(area.occupied),
+          0
+        );
+
+        const totalAvailable = validAreas.reduce(
+          (sum, area) =>
+            sum + Math.max(0, Number(area.capacity) - Number(area.occupied)),
+          0
+        );
+
+        /* Update empat kartu ringkasan */
+        const capacityEl = document.getElementById("capacityCount");
+        const occupiedEl = document.getElementById("occupiedCount");
+        const availableEl = document.getElementById("availableCount");
+        const overallEl = document.getElementById("overallStatus");
+
+        if (capacityEl) capacityEl.textContent = totalCapacity;
+        if (occupiedEl) occupiedEl.textContent = totalOccupied;
+        if (availableEl) availableEl.textContent = totalAvailable;
+
+        /* Status keseluruhan */
+        if (overallEl) {
+          let label = "Tersedia";
+          let cls = "available";
+
+          if (totalCapacity === 0) {
+            label = "Belum Ada Data";
+            cls = "no-data";
+          } else if (totalOccupied / totalCapacity >= 0.95) {
+            label = "Penuh";
+            cls = "full";
+          } else if (totalOccupied / totalCapacity >= 0.8) {
+            label = "Hampir Penuh";
+            cls = "warning";
+          }
+
+          overallEl.textContent = label;
+          overallEl.className = "summary-status " + cls;
+        }
+
+        /* Render kartu Area A-G */
+        container.innerHTML = areas
+          .map((area) => {
+            const capRaw = area.capacity;
+            const occRaw = area.occupied;
+
+            const valid =
+              area.enabled !== false &&
+              capRaw != null &&
+              occRaw != null &&
+              Number.isFinite(Number(capRaw)) &&
+              Number.isFinite(Number(occRaw)) &&
+              Number(capRaw) > 0 &&
+              Number(occRaw) >= 0;
+
+            const capacity = valid ? Number(capRaw) : 0;
+            const occupied = valid ? Number(occRaw) : 0;
+            const available = valid ? Math.max(0, capacity - occupied) : 0;
+
+            const pct = valid
+              ? Math.min(100, Math.round((occupied / capacity) * 100))
+              : 0;
+
+            let status = {
+              label: "Belum ada data",
+              cls: "no-data",
+              color: statusColors.noData,
+            };
+
+            if (area.enabled === false) {
+              status = {
+                label: "Nonaktif",
+                cls: "no-data",
+                color: statusColors.noData,
+              };
+            } else if (valid && pct >= 95) {
+              status = {
+                label: "Penuh",
+                cls: "full",
+                color: statusColors.full,
+              };
+            } else if (valid && pct >= 80) {
+              status = {
+                label: "Hampir Penuh",
+                cls: "near-full",
+                color: statusColors.nearFull,
+              };
+            } else if (valid) {
+              status = {
+                label: "Tersedia",
+                cls: "available",
+                color: statusColors.available,
+              };
+            }
+
+            const id = String(area.id ?? "").toUpperCase();
+            const label = area.name || `Area ${id}`;
+            const areaColor = areaColors[id] || area.color || "#64748b";
+
+            /* Waktu update */
+            const rawTime =
+              area.updatedAt || area.lastUpdated || area.updated_at;
+
+            let updated = "Belum tersedia";
+
+            if (rawTime) {
+              const date = new Date(rawTime);
+
+              updated = Number.isNaN(date.getTime())
+                ? esc(rawTime)
+                : date.toLocaleTimeString("id-ID", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: false,
+                  }) + " WIB";
+            }
+
+            return `
+          <article class="parking-area-card">
+            <div
+              class="parking-area-heading"
+              style="--area-tint:${areaColor}22"
+            >
+              <h3>${esc(label)}</h3>
+              <span class="parking-status ${status.cls}">
+                ${status.label}
+              </span>
+            </div>
+
+            <div class="parking-area-summary">
+              <div
+                class="parking-donut"
+                style="
+                  --parking-percent:${pct}%;
+                  --parking-color:${status.color};
+                "
+                role="img"
+                aria-label="${esc(label)}: ${
+              valid ? pct + "% terisi" : "Belum ada data"
+            }"
+              >
+                <div class="parking-donut-center">
+                  <strong>${valid ? pct + "%" : "—"}</strong>
+                  <small>Terisi</small>
+                </div>
+              </div>
+
+              <div class="parking-area-details">
+                <div class="parking-detail-row">
+                  <span>Kapasitas</span>
+                  <strong>${valid ? capacity + " slot" : "—"}</strong>
+                </div>
+
+                <div class="parking-detail-row">
+                  <span>Terisi</span>
+                  <strong>${valid ? occupied + " kendaraan" : "—"}</strong>
+                </div>
+
+                <div class="parking-detail-row">
+                  <span>Tersedia</span>
+                  <strong>${valid ? available + " slot" : "—"}</strong>
+                </div>
+
+                <div class="parking-detail-row">
+                  <span>Update terakhir</span>
+                  <strong>${updated}</strong>
+                </div>
+              </div>
+            </div>
+          </article>
+        `;
+          })
+          .join("");
+      };
+
+      /* DIAGRAM BATANG DASHBOARD */
+      window.renderBars = function (areas) {
+        const container = document.getElementById("capacityChart");
+        if (!container) return;
+
+        const colors = {
+          A: "#20c4d0",
+          B: "#ff8a32",
+          C: "#4798f5",
+          D: "#50b85a",
+          E: "#a875e8",
+          F: "#ffd43b",
+          G: "#ff7188",
+        };
+
+        if (!Array.isArray(areas) || areas.length === 0) {
+          container.innerHTML =
+            '<div class="empty-chart">Belum ada data parkir.</div>';
+          return;
+        }
+
+        const getAreaKey = (area) => {
+          const text = String(area.id ?? area.name ?? "").toUpperCase();
+          const match = text.match(/(?:AREA\s*)?([A-G])(?:\b|$)/);
+          return match ? match[1] : "";
+        };
+
+        const values = areas
+          .filter((area) => area.enabled !== false)
+          .map((area) => {
+            const validValue =
+              area.occupied !== null &&
+              area.occupied !== undefined &&
+              Number.isFinite(Number(area.occupied)) &&
+              Number(area.occupied) >= 0;
+
+            return {
+              area,
+              value: validValue ? Number(area.occupied) : 0,
+              label: area.name || `Area ${area.id}`,
+              key: getAreaKey(area),
+              color: colors[getAreaKey(area)] || area.color || "#64748b",
+            };
+          })
+          .sort((a, b) => a.key.localeCompare(b.key));
+
+        const chartMax = 30;
+        const tickStep = 6;
+
+        container.innerHTML = `
+          <div class="vertical-chart-scroll">
+            <div class="vertical-chart">
+              <div class="chart-y-axis">
+                ${Array.from({ length: 6 }, (_, i) => {
+                  const value = chartMax - tickStep * i;
+                  return `<div class="chart-y-label">${value}</div>`;
+                }).join("")}
+              </div>
+
+              <div class="chart-plot">
+                <div class="chart-grid-lines">
+                  ${Array.from(
+                    { length: 6 },
+                    () => '<div class="chart-grid-line"></div>'
+                  ).join("")}
+                </div>
+
+                <div class="chart-bars">
+                  ${values
+                    .map((item) => {
+                      const height = Math.min(
+                        (item.value / chartMax) * 100,
+                        100
+                      );
+
+                      return `
+                        <div class="chart-bar-item">
+                          <div class="chart-bar-area">
+                            <span
+                              class="chart-bar-value"
+                              style="bottom:${height}%;"
+                            >${item.value}</span>
+
+                            <div
+                              class="chart-bar"
+                              style="height:${height}%; background-color:${item.color};"
+                              title="${item.label}: ${item.value} kendaraan"
+                            ></div>
+                          </div>
+
+                          <div class="chart-x-label">${item.label}</div>
+                        </div>
+                      `;
+                    })
+                    .join("")}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      };
+    </script>
+
+    <!-- MEMUAT RIWAYAT TERBARU DI DASHBOARD -->
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        const body = document.getElementById("historyBody");
+        const empty = document.getElementById("empty");
+
+        if (!body) return;
+
+        try {
+          const records = await API.history({});
+
+          const rows = Array.isArray(records)
+            ? records
+            : Array.isArray(records?.data)
+            ? records.data
+            : [];
+
+          body.innerHTML = rows
+            .slice(0, 10)
+            .map(
+              (r, i) => `
+              <tr>
+                <td>${i + 1}</td>
+                <td>${
+                  typeof fmtDate === "function"
+                    ? fmtDate(r.date)
+                    : r.date || "-"
+                }</td>
+                <td>${r.time ?? "-"}</td>
+                <td>${r.area ?? "-"}</td>
+                <td>${r.capacity ?? "-"}</td>
+                <td>${r.occupied ?? "-"}</td>
+                <td>${r.available ?? "-"}</td>
+                <td>
+                  <span class="status ${
+                    typeof statusClass === "function"
+                      ? statusClass(r.status)
+                      : ""
+                  }">
+                    ${r.status ?? "-"}
+                  </span>
+                </td>
+                <td>${r.source ?? r.sumber ?? "-"}</td>
+              </tr>
+            `
+            )
+            .join("");
+
+          if (empty) {
+            empty.style.display = rows.length ? "none" : "block";
+          }
+
+          if (!rows.length) {
+            body.innerHTML = `
+            <tr>
+              <td colspan="9">Tidak ada data riwayat parkir.</td>
+            </tr>
+          `;
+          }
+        } catch (error) {
+          console.error("Riwayat Dashboard gagal dimuat:", error);
+
+          body.innerHTML = `
+          <tr>
+            <td colspan="9">Riwayat parkir gagal dimuat.</td>
+          </tr>
+        `;
+
+          if (empty) {
+            empty.style.display = "none";
+          }
+        }
+      });
+    </script>
+
+    <!-- MEMUAT DATA AREA DAN KAPASITAS DASHBOARD -->
+    <script>
+      async function loadDashboardSlots() {
+        const tbody = document.getElementById("dashboardSlotRows");
+
+        if (!tbody) return;
+
+        try {
+          const areas = await API.areas();
+
+          const rows = Array.isArray(areas)
+            ? areas
+            : Array.isArray(areas?.data)
+            ? areas.data
+            : [];
+
+          if (rows.length === 0) {
+            tbody.innerHTML = `
+            <tr>
+              <td colspan="5">Belum ada data area parkir.</td>
+            </tr>
+          `;
+            return;
+          }
+
+          tbody.innerHTML = rows
+            .map((area) => {
+              const active = area.enabled !== false;
+              const statusText = active ? "Aktif" : "Nonaktif";
+              const statusClassName = active ? "badge-success" : "badge-danger";
+
+              return `
+              <tr>
+                <td>${area.name || `Area ${area.id}`}</td>
+                <td>${area.id ?? "-"}</td>
+                <td>${area.capacity ?? 0} slot</td>
+                <td>${area.name ?? "-"}</td>
+                <td>
+                  <span class="badge ${statusClassName}">
+                    ${statusText}
+                  </span>
+                </td>
+              </tr>
+            `;
+            })
+            .join("");
+        } catch (error) {
+          console.error("Data area dashboard gagal dimuat:", error);
+
+          tbody.innerHTML = `
+          <tr>
+            <td colspan="5">Data area gagal dimuat.</td>
+          </tr>
+        `;
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // Memuat data pertama kali
+        loadDashboardSlots();
+
+        // Memperbarui data setiap 1 menit
+        setInterval(loadDashboardSlots, 60000);
+      });
+    </script>
+  </body>
+</html>

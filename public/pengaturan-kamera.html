@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Pengaturan Kamera | Smart Parking</title>
+    <link rel="stylesheet" href="/global.css" />
+  </head>
+  <body data-protected="true">
+    <aside class="sidebar">
+      <div class="brand">
+        <img class="brand-logo" src="/assets/logo-upi.png" alt="Logo UPI" />
+        <div>
+          <h2>Smart Parking</h2>
+          <p>UPI Tasikmalaya</p>
+        </div>
+      </div>
+      <nav class="menu">
+        <a href="/smart_parking_dashboard.html"
+          ><span class="nav-icon">⌂</span><span>Dashboard</span></a
+        >
+        <a href="/data-parkir.html"
+          ><span class="nav-icon">▣</span><span>Data Parkir</span></a
+        >
+        <a href="/riwayat.html"
+          ><span class="nav-icon">◷</span><span>Riwayat</span></a
+        >
+        <a href="/pengaturan-kamera.html"
+          ><span class="nav-icon">◉</span><span>Pengaturan Kamera</span></a
+        >
+        <a href="/pengaturan-slot.html"
+          ><span class="nav-icon">▦</span><span>Pengaturan Slot</span></a
+        >
+      </nav>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="time">
+          <span id="clockDate"></span><br /><b id="clock"></b>
+        </div>
+      </header>
+      <h1 class="page-title">Pengaturan Kamera</h1>
+      <p class="subtitle">
+        Aktifkan atau nonaktifkan kamera pemantau pada setiap area A–G.
+      </p>
+      <div class="notice warning">
+        Tombol menyimpan status kamera ke database backend dan memperbarui
+        indikator peta. Pengendalian fisik kamera memerlukan adapter/protokol
+        IoT sesuai perangkat yang digunakan.
+      </div>
+      <section class="card">
+        <h2 class="table-title">Peta Status Kamera</h2>
+        <p class="muted" style="margin-bottom: 12px">
+          ON = aktif; OFF = nonaktif.
+        </p>
+        <div id="cameraMap" class="area-map"></div>
+      </section>
+      <section class="card">
+        <div class="table-head">
+          <div>
+            <h2 class="table-title">Kontrol Kamera per Area</h2>
+            <p class="muted">Status disimpan ke database.</p>
+          </div>
+          <button class="btn btn-outline" onclick="initCameras()">
+            Muat Ulang
+          </button>
+        </div>
+        <div id="cameraCards" class="area-grid"></div>
+      </section>
+      <p class="footer-note">Smart Parking · UPI Kampus Tasikmalaya</p>
+    </main>
+    <button
+      class="btn"
+      style="position: fixed; right: 14px; bottom: 14px; z-index: 8"
+      onclick="logoutAdmin()"
+    >
+      Keluar
+    </button>
+    <script src="/auth.js"></script>
+    <script src="/app.js"></script>
+  </body>
+</html>
