@@ -43,14 +43,25 @@
       <p class="subtitle">
         Filter riwayat dan ekspor data hasil filter ke Excel atau PDF.
       </p>
-      <section class="card filters">
+      <section class="card filters" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) auto; gap: 12px; align-items: end;">
         <div class="field">
-          <label for="dateFilter">Tanggal</label
-          ><input id="dateFilter" type="date" />
+          <label for="periodFilter">Periode Rentang</label>
+          <select id="periodFilter">
+            <option value="all">Semua Waktu</option>
+            <option value="today">Hari Ini</option>
+            <option value="7">7 Hari Terakhir (Mingguan)</option>
+            <option value="30">30 Hari Terakhir (Bulanan)</option>
+            <option value="90">3 Bulan Terakhir</option>
+            <option value="custom">Pilih Tanggal Manual</option>
+          </select>
+        </div>
+        <div class="field" id="dateFilterWrapper">
+          <label for="dateFilter">Tanggal Spesifik</label>
+          <input id="dateFilter" type="date" />
         </div>
         <div class="field">
-          <label for="areaFilter">Area Parkir</label
-          ><select id="areaFilter">
+          <label for="areaFilter">Area Parkir</label>
+          <select id="areaFilter">
             <option>Semua Area</option>
             <option>Area A</option>
             <option>Area B</option>
@@ -62,36 +73,54 @@
           </select>
         </div>
         <div class="field">
-          <label for="statusFilter">Status</label
-          ><select id="statusFilter">
+          <label for="statusFilter">Status</label>
+          <select id="statusFilter">
             <option>Semua Status</option>
             <option>Tersedia</option>
             <option>Hampir Penuh</option>
             <option>Penuh</option>
           </select>
         </div>
-        <button class="btn" onclick="loadHistory()">Tampilkan</button>
+        <div>
+          <button class="btn btn-green" onclick="loadHistory()" style="height: 41px;">Tampilkan</button>
+        </div>
       </section>
-      <div class="grid grid-3">
-        <div class="card stat">
-          <div class="stat-icon">◷</div>
+
+      <!-- KPI & MATRIKS METRIK RIWAYAT (Prinsip Slide PPT: KPI & Ringkasan Metrik) -->
+      <div class="grid" style="grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px;">
+        <div class="card stat" style="padding: 12px 14px; margin-bottom: 0;">
+          <div class="stat-icon" style="width: 38px; height: 38px; font-size: 17px; background: #e0f2fe; color: #0284c7;">◷</div>
           <div>
-            <div class="stat-label">Data Tercatat</div>
-            <div class="stat-value" id="totalData">0</div>
+            <div class="stat-label" style="font-size: 11px; color: #64748b;">Total Data</div>
+            <div class="stat-value" id="totalData" style="font-size: 20px; font-weight: 800; color: #0f172a;">0</div>
           </div>
         </div>
-        <div class="card stat">
-          <div class="stat-icon">✓</div>
+        <div class="card stat" style="padding: 12px 14px; margin-bottom: 0;">
+          <div class="stat-icon" style="width: 38px; height: 38px; font-size: 17px; background: #d1fae5; color: #059669;">✓</div>
           <div>
-            <div class="stat-label">Status Tersedia</div>
-            <div class="stat-value" id="availableCount">0</div>
+            <div class="stat-label" style="font-size: 11px; color: #64748b;">Tersedia</div>
+            <div class="stat-value" id="availableCount" style="font-size: 20px; font-weight: 800; color: #059669;">0</div>
           </div>
         </div>
-        <div class="card stat">
-          <div class="stat-icon">!</div>
+        <div class="card stat" style="padding: 12px 14px; margin-bottom: 0;">
+          <div class="stat-icon" style="width: 38px; height: 38px; font-size: 17px; background: #fef3c7; color: #d97706;">!</div>
           <div>
-            <div class="stat-label">Hampir Penuh</div>
-            <div class="stat-value" id="fullCount">0</div>
+            <div class="stat-label" style="font-size: 11px; color: #64748b;">Hampir Penuh</div>
+            <div class="stat-value" id="fullCount" style="font-size: 20px; font-weight: 800; color: #d97706;">0</div>
+          </div>
+        </div>
+        <div class="card stat" style="padding: 12px 14px; margin-bottom: 0;">
+          <div class="stat-icon" style="width: 38px; height: 38px; font-size: 17px; background: #fee2e2; color: #dc2626;">✕</div>
+          <div>
+            <div class="stat-label" style="font-size: 11px; color: #64748b;">Penuh</div>
+            <div class="stat-value" id="criticalFullCount" style="font-size: 20px; font-weight: 800; color: #dc2626;">0</div>
+          </div>
+        </div>
+        <div class="card stat" style="padding: 12px 14px; margin-bottom: 0;">
+          <div class="stat-icon" style="width: 38px; height: 38px; font-size: 17px; background: #ede9fe; color: #7c3aed;">📊</div>
+          <div>
+            <div class="stat-label" style="font-size: 11px; color: #64748b;">Rata-rata Terisi</div>
+            <div class="stat-value" id="avgOccupied" style="font-size: 20px; font-weight: 800; color: #7c3aed;">0%</div>
           </div>
         </div>
       </div>
