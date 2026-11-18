@@ -215,7 +215,43 @@ app.post("/api/iot/reading", (req, res) => {
 });
 
 app.get("/api/history", (req, res) => {
-  res.json([...history].reverse());
+  let rows = [...history].reverse();
+  const { date, area, status: filterStatus, period } = req.query;
+
+  if (period && period !== "all" && period !== "custom") {
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    const start = new Date(today);
+
+    if (period === "today") {
+      start.setHours(0, 0, 0, 0);
+    } else {
+      const days = Number(period);
+      if (Number.isFinite(days) && days > 0) {
+        start.setDate(start.getDate() - (days - 1));
+        start.setHours(0, 0, 0, 0);
+      }
+    }
+
+    rows = rows.filter((r) => {
+      const stamp = r.timestamp ? new Date(r.timestamp) : new Date(r.date);
+      return stamp >= start && stamp <= today;
+    });
+  } else if (date) {
+    rows = rows.filter((r) => r.date === date);
+  }
+
+  if (area && area !== "Semua Area")
+    rows = rows.filter(
+      (r) =>
+        r.areaId ===
+        String(area)
+          .replace(/^Area /, "")
+          .toUpperCase()
+    );
+  if (filterStatus && filterStatus !== "Semua Status")
+    rows = rows.filter((r) => r.status === filterStatus);
+  res.json(rows);
 });
 
 app.listen(PORT, () => {
