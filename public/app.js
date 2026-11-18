@@ -707,6 +707,25 @@ async function initHistory() {
     console.error(error);
   }
 
+  const periodSelect = $("periodFilter");
+  const dateWrapper = $("dateFilterWrapper");
+
+  if (periodSelect && dateWrapper) {
+    periodSelect.addEventListener("change", () => {
+      if (periodSelect.value === "custom") {
+        dateWrapper.style.display = "block";
+      } else {
+        dateWrapper.style.display = "none";
+        if ($("dateFilter")) $("dateFilter").value = "";
+      }
+      loadHistory();
+    });
+    // Sembunyikan input tanggal spesifik default jika bukan custom
+    if (periodSelect.value !== "custom") {
+      dateWrapper.style.display = "none";
+    }
+  }
+
   ["dateFilter", "areaFilter", "statusFilter"].forEach((id) => {
     const element = $(id);
 
@@ -721,8 +740,11 @@ async function initHistory() {
 async function loadHistory() {
   try {
     const query = {};
+    const period = $("periodFilter")?.value || "all";
 
-    if ($("dateFilter")?.value) {
+    if (period !== "all" && period !== "custom") {
+      query.period = period;
+    } else if ($("dateFilter")?.value) {
       query.date = $("dateFilter").value;
     }
 
@@ -734,7 +756,22 @@ async function loadHistory() {
       query.status = $("statusFilter").value;
     }
 
-    const data = await API.history(query);
+    const data = (await API.history(query)).filter((r) => {
+      const timeText = String(r.time ?? "");
+      const match = timeText.match(/^(\d{1,2})[:.]/);
+
+      let hour;
+
+      if (match) {
+        hour = Number(match[1]);
+      } else if (r.timestamp) {
+        hour = new Date(r.timestamp).getHours();
+      } else {
+        return true;
+      }
+
+      return hour >= 7 && hour <= 17;
+    });
 
     if ($("historyBody")) {
       $("historyBody").innerHTML = data
@@ -745,14 +782,15 @@ async function loadHistory() {
               <td>${fmtDate(r.date)}</td>
               <td>${r.time}</td>
               <td>${r.area}</td>
-              <td>${r.capacity}</td>
-              <td>${r.occupied}</td>
-              <td>${r.available}</td>
+              <td>${r.capacity} slot</td>
+              <td><strong style="color:#059669; font-weight:700;">${r.occupied}</strong></td>
+              <td><strong style="color:#0284c7; font-weight:700;">${r.available}</strong></td>
               <td>
                 <span class="status ${statusClass(r.status)}">
                   ${r.status}
                 </span>
               </td>
+              <td>${r.source || "sensor"}</td>
             </tr>
           `
         )
@@ -763,20 +801,40 @@ async function loadHistory() {
       $("empty").style.display = data.length ? "none" : "block";
     }
 
+    // Hitung KPI & Matriks Pendukung
+    const totalCount = data.length;
+    const availableCount = data.filter((r) => r.status === "Tersedia").length;
+    const nearFullCount = data.filter((r) => r.status === "Hampir Penuh").length;
+    const fullCount = data.filter((r) => r.status === "Penuh").length;
+
+    let avgOccupiedPct = 0;
+    if (totalCount > 0) {
+      const sumPct = data.reduce((acc, r) => {
+        const cap = Number(r.capacity) || 0;
+        const occ = Number(r.occupied) || 0;
+        return acc + (cap > 0 ? (occ / cap) * 100 : 0);
+      }, 0);
+      avgOccupiedPct = Math.round(sumPct / totalCount);
+    }
+
     if ($("totalData")) {
-      $("totalData").textContent = data.length;
+      $("totalData").textContent = totalCount;
     }
 
     if ($("availableCount")) {
-      $("availableCount").textContent = data.filter(
-        (r) => r.status === "Tersedia"
-      ).length;
+      $("availableCount").textContent = availableCount;
     }
 
     if ($("fullCount")) {
-      $("fullCount").textContent = data.filter(
-        (r) => r.status === "Hampir Penuh"
-      ).length;
+      $("fullCount").textContent = nearFullCount;
+    }
+
+    if ($("criticalFullCount")) {
+      $("criticalFullCount").textContent = fullCount;
+    }
+
+    if ($("avgOccupied")) {
+      $("avgOccupied").textContent = `${avgOccupiedPct}%`;
     }
 
     window.filteredHistory = data;
@@ -800,27 +858,34 @@ function exportExcel() {
     return alert("Library Excel perlu koneksi internet.");
   }
 
+  const periodSelect = $("periodFilter");
+  const periodText = periodSelect ? periodSelect.options[periodSelect.selectedIndex].text : "Semua Waktu";
+
   const filters = {
-    tanggal: $("dateFilter")?.value || "Semua tanggal",
+    periode: periodText,
+    tanggal: $("dateFilter")?.value || "-",
     area: $("areaFilter")?.value || "Semua Area",
     status: $("statusFilter")?.value || "Semua Status",
   };
 
   const worksheet = XLSX.utils.aoa_to_sheet([
-    ["LAPORAN RIWAYAT SMART PARKING"],
-    ["Tanggal", filters.tanggal],
-    ["Area", filters.area],
-    ["Status", filters.status],
+    ["LAPORAN RIWAYAT SMART PARKING UPI"],
+    ["Periode Rentang", filters.periode],
+    ["Tanggal Spesifik", filters.tanggal],
+    ["Area Parkir", filters.area],
+    ["Status Filter", filters.status],
+    ["Total Data Hasil Filter", rows.length],
     [],
     [
       "No",
       "Tanggal",
       "Waktu",
       "Area",
-      "Kapasitas",
-      "Terisi",
-      "Tersedia",
+      "Kapasitas Slot",
+      "Kendaraan Terisi",
+      "Slot Tersedia",
       "Status",
+      "Sumber",
     ],
     ...rows.map((r, i) => [
       i + 1,
@@ -831,14 +896,13 @@ function exportExcel() {
       r.occupied,
       r.available,
       r.status,
+      r.source || "sensor",
     ]),
   ]);
 
   const workbook = XLSX.utils.book_new();
-
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Riwayat");
-
-  XLSX.writeFile(workbook, "riwayat-parkir.xlsx");
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Riwayat Parkir");
+  XLSX.writeFile(workbook, `riwayat-parkir-${new Date().toISOString().slice(0, 10)}.xlsx`);
 }
 
 /* =========================
@@ -862,23 +926,24 @@ function exportPDF() {
     orientation: "landscape",
   });
 
-  pdf.setFontSize(16);
+  const periodSelect = $("periodFilter");
+  const periodText = periodSelect ? periodSelect.options[periodSelect.selectedIndex].text : "Semua Waktu";
 
-  pdf.text("Laporan Riwayat Smart Parking", 14, 16);
+  pdf.setFontSize(15);
+  pdf.text("Laporan Riwayat Smart Parking UPI Tasikmalaya", 14, 15);
 
-  pdf.setFontSize(10);
-
+  pdf.setFontSize(9.5);
+  pdf.setTextColor(80, 80, 80);
   pdf.text(
-    `Tanggal: ${$("dateFilter")?.value || "Semua tanggal"} | Area: ${
+    `Periode: ${periodText} | Area: ${
       $("areaFilter")?.value || "Semua Area"
-    } | Status: ${$("statusFilter")?.value || "Semua Status"}`,
+    } | Status: ${$("statusFilter")?.value || "Semua Status"} | Total: ${rows.length} Data`,
     14,
-    24
+    22
   );
 
   pdf.autoTable({
-    startY: 31,
-
+    startY: 27,
     head: [
       [
         "No",
@@ -889,28 +954,32 @@ function exportPDF() {
         "Terisi",
         "Tersedia",
         "Status",
+        "Sumber",
       ],
     ],
-
     body: rows.map((r, i) => [
       i + 1,
       fmtDate(r.date),
       r.time,
       r.area,
-      r.capacity,
-      r.occupied,
-      r.available,
+      `${r.capacity} slot`,
+      `${r.occupied} kendaraan`,
+      `${r.available} slot`,
       r.status,
+      r.source || "sensor",
     ]),
-
     theme: "grid",
-
     headStyles: {
       fillColor: [16, 47, 87],
+      fontSize: 9,
+    },
+    styles: {
+      fontSize: 8.5,
+      cellPadding: 2.5,
     },
   });
 
-  pdf.save("riwayat-parkir.pdf");
+  pdf.save(`riwayat-parkir-${new Date().toISOString().slice(0, 10)}.pdf`);
 }
 
 /* =========================
