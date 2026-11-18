@@ -6,6 +6,13 @@
     <title>Dashboard | Smart Parking</title>
     <link rel="stylesheet" href="/global.css" />
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
       :root {
         --area-a: #20c4d0;
@@ -17,79 +24,270 @@
         --area-g: #ff7188;
       }
 
-      
-      /* RINGKAS & INTERAKTIF HOVER */
+      body {
+        font-family: "Plus Jakarta Sans", system-ui, -apple-system,
+          BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+
+      /* JARAK ANTAR CARD RINGKAS & TIDAK BANYAK SCROLL KE BAWAH */
       .dashboard-summary {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 12px;
-        margin: 14px 0 16px;
+        margin: 14px 0 14px;
       }
 
       .summary-card {
         display: flex;
-        align-items: center;
-        gap: 10px;
+        flex-direction: column;
+        justify-content: space-between;
         min-width: 0;
         padding: 12px 14px;
-        background: var(--card-bg, #fff);
-        border: 1px solid var(--border, #e5e7eb);
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
         border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+        box-shadow: 0 2px 10px -2px rgba(15, 23, 42, 0.04);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
+        position: relative;
+        overflow: hidden;
       }
 
       .summary-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+        box-shadow: 0 8px 18px -4px rgba(15, 23, 42, 0.08);
+      }
+
+      .summary-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
       }
 
       .summary-icon {
-        width: 36px;
-        height: 36px;
-        flex: 0 0 36px;
+        width: 34px;
+        height: 34px;
+        flex: 0 0 34px;
         display: grid;
         place-items: center;
-        border-radius: 10px;
-        font-size: 18px;
+        border-radius: 9px;
+        font-size: 16px;
+      }
+
+      .summary-icon.blue {
+        color: #0284c7;
+        background: #e0f2fe;
+      }
+
+      .summary-icon.green {
+        color: #059669;
+        background: #d1fae5;
+      }
+
+      .summary-icon.orange {
+        color: #d97706;
+        background: #fef3c7;
+      }
+
+      .summary-icon.purple {
+        color: #7c3aed;
+        background: #ede9fe;
+      }
+
+      .summary-badge {
+        font-size: 10px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 20px;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+      }
+
+      .summary-badge.green {
+        background: #d1fae5;
+        color: #047857;
+      }
+
+      .summary-badge.blue {
+        background: #e0f2fe;
+        color: #0284c7;
+      }
+
+      .summary-badge.orange {
+        background: #fef3c7;
+        color: #b45309;
+      }
+
+      .summary-badge.slate {
+        background: #f1f5f9;
+        color: #475569;
       }
 
       .summary-label {
         color: #64748b;
         font-size: 11px;
-        margin-bottom: 2px;
         font-weight: 600;
+        margin-bottom: 4px;
       }
 
       .summary-value {
-        font-size: 20px;
+        font-size: 22px;
         font-weight: 800;
-        color: var(--text-color, #172033);
+        color: #0f172a;
+        line-height: 1.15;
+        display: flex;
+        align-items: baseline;
+        gap: 5px;
+      }
+
+      .summary-unit {
+        font-size: 11px;
+        color: #64748b;
+        font-weight: 500;
+      }
+
+      .summary-mini-progress {
+        width: 100%;
+        height: 4px;
+        background: #f1f5f9;
+        border-radius: 6px;
+        margin-top: 8px;
+        overflow: hidden;
+      }
+
+      .mini-bar-fill {
+        height: 100%;
+        border-radius: 6px;
+        transition: width 0.4s ease;
+      }
+
+      .mini-bar-fill.green {
+        background: linear-gradient(90deg, #10b981, #059669);
+      }
+
+      .mini-bar-fill.blue {
+        background: linear-gradient(90deg, #38bdf8, #2563eb);
+      }
+
+      .summary-footer-text {
+        font-size: 10.5px;
+        color: #94a3b8;
+        margin-top: 6px;
+        font-weight: 500;
+      }
+
+      .status-pulse-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #10b981;
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        animation: pulse-green 2s infinite;
+      }
+
+      @keyframes pulse-green {
+        0% {
+          transform: scale(0.95);
+          box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        }
+        70% {
+          transform: scale(1);
+          box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+        }
+        100% {
+          transform: scale(0.95);
+          box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+        }
+      }
+
+      .summary-status {
+        font-size: 18px;
+        font-weight: 700;
         line-height: 1.15;
       }
 
+      .summary-status.available {
+        color: #059669;
+      }
+
+      .summary-status.warning {
+        color: #d97706;
+      }
+
+      .summary-status.full {
+        color: #dc2626;
+      }
+
+      .summary-status.no-data {
+        color: #64748b;
+      }
+
+      /* JARAK ANTAR SECTION LEBIH RINGKAS & PADAT */
       .parking-dashboard-card {
+        margin-top: 0;
         margin-bottom: 14px;
         padding: 14px 16px;
       }
 
+      .analytics-section {
+        margin: 0 0 16px;
+        padding: 14px 16px;
+      }
+
+      .dashboard-lower {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 16px;
+        align-items: stretch;
+        margin-bottom: 16px;
+      }
+
+      .dashboard-lower > .card {
+        min-width: 0;
+        height: 100%;
+        min-height: 0;
+        box-sizing: border-box;
+        overflow: hidden;
+        padding: 14px 16px;
+      }
+
+      .dashboard-lower > .card:first-child,
+      .dashboard-lower > .card:nth-child(2) {
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* DIAGRAM DONAT COMPACT & INTERACTIVE HOVER */
       .parking-area-grid {
         display: grid;
         grid-template-columns: repeat(7, minmax(0, 1fr));
-        gap: 10px;
-        margin-top: 14px;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      @media (max-width: 1200px) {
+        .parking-area-grid {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 768px) {
+        .parking-area-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
       }
 
       .parking-area-card {
         position: relative;
         min-width: 0;
-        padding: 10px 8px;
+        padding: 12px 10px;
         border: 1px solid #e2e8f0;
         border-radius: 12px;
         background: var(--card-bg, #fff);
-        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
         cursor: pointer;
-        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+          box-shadow 0.2s ease, border-color 0.2s ease;
       }
 
       .parking-area-card:hover {
@@ -103,261 +301,9 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 5px;
-        padding: 5px 3px;
-        margin-bottom: 6px;
-        border-radius: 7px;
-        background: var(--area-tint, #f1f5f9);
-      }
-
-      .parking-area-heading h3 {
-        margin: 0;
-        font-size: 12.5px;
-        font-weight: 700;
-        color: #1e293b;
-        text-align: center;
-      }
-
-      .parking-donut {
-        position: relative;
-        display: grid;
-        place-items: center;
-        width: 68px;
-        height: 68px;
-        flex-shrink: 0;
-        border-radius: 50%;
-        background: conic-gradient(
-          var(--parking-color) var(--parking-percent),
-          #e2e8f0 var(--parking-percent)
-        );
-      }
-
-      .parking-donut::before {
-        content: "";
-        position: absolute;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: var(--card-bg, #fff);
-      }
-
-      .parking-donut-center strong {
-        display: block;
-        font-size: 14px;
-        font-weight: 800;
-        color: #0f172a;
-      }
-
-      .parking-donut-center small {
-        font-size: 8.5px;
-        font-weight: 600;
-        color: #64748b;
-        text-transform: uppercase;
-      }
-
-      .parking-area-hint {
-        font-size: 9.5px;
-        color: #94a3b8;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-top: 4px;
-        font-weight: 500;
-      }
-
-      .parking-area-card:hover .parking-area-hint {
-        color: #2563eb;
-      }
-
-      /* POPOVER HOVER INTERAKTIF */
-      .parking-area-popover {
-        position: absolute;
-        bottom: calc(100% + 8px);
-        left: 50%;
-        transform: translateX(-50%) translateY(6px);
-        width: 190px;
-        background: #0f172a;
-        color: #f8fafc;
-        padding: 10px 12px;
-        border-radius: 10px;
-        box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.3);
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-        transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
-        z-index: 100;
-      }
-
-      .parking-area-popover::after {
-        content: "";
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        border-width: 6px;
-        border-style: solid;
-        border-color: #0f172a transparent transparent transparent;
-      }
-
-      .parking-area-card:hover .parking-area-popover {
-        opacity: 1;
-        visibility: visible;
-        transform: translateX(-50%) translateY(0);
-      }
-
-      .popover-header {
-        font-size: 11px;
-        font-weight: 700;
-        color: #93c5fd;
-        border-bottom: 1px solid #334155;
-        padding-bottom: 5px;
-        margin-bottom: 6px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .popover-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 10.5px;
-        padding: 2.5px 0;
-      }
-
-      .popover-row span {
-        color: #94a3b8;
-      }
-
-      .popover-row strong {
-        font-weight: 700;
-      }
-
-      /* EMPAT KARTU RINGKASAN */
-      .dashboard-summary {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 14px;
-        margin: 22px 0 30px;
-      }
-
-      .summary-card {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        min-width: 0;
-        padding: 16px;
-        background: var(--card-bg, #fff);
-        border: 1px solid var(--border, #e5e7eb);
-        border-radius: 13px;
-        box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06);
-      }
-
-      .summary-icon {
-        width: 42px;
-        height: 42px;
-        flex: 0 0 42px;
-        display: grid;
-        place-items: center;
-        border-radius: 50%;
-        font-size: 21px;
-      }
-
-      .summary-icon.blue {
-        color: #1683ed;
-        background: #e2efff;
-      }
-
-      .summary-icon.green {
-        color: #08a66a;
-        background: #d9f8e9;
-      }
-
-      .summary-icon.orange {
-        color: #e99400;
-        background: #fff0ce;
-      }
-
-      .summary-icon.purple {
-        color: #7155ed;
-        background: #eee9ff;
-      }
-
-      .summary-label {
-        color: #64748b;
-        font-size: 11px;
-        margin-bottom: 3px;
-      }
-
-      .summary-value {
-        font-size: 21px;
-        font-weight: 700;
-        color: var(--text-color, #172033);
-        line-height: 1.2;
-      }
-
-      .summary-unit {
-        font-size: 11px;
-        color: #64748b;
-        font-weight: 400;
-      }
-
-      .summary-status {
-        font-size: 20px;
-        font-weight: 700;
-        line-height: 1.2;
-      }
-
-      .summary-status.available {
-        color: #08b46a;
-      }
-
-      .summary-status.warning {
-        color: #e99a12;
-      }
-
-      .summary-status.full {
-        color: #e54848;
-      }
-
-      .summary-status.no-data {
-        color: #64748b;
-      }
-
-      /* JARAK ANTAR CARD */
-      .dashboard-summary {
-        margin-bottom: 30px;
-      }
-
-      .parking-dashboard-card {
-        margin-top: 0;
-        margin-bottom: 18px;
-      }
-
-      /* DIAGRAM DONAT COMPACT */
-      .parking-area-grid {
-        display: grid;
-        grid-template-columns: repeat(7, minmax(0, 1fr));
-        gap: 10px;
-        margin-top: 16px;
-      }
-
-      .parking-area-card {
-        min-width: 0;
-        padding: 10px 7px;
-        border: 1px solid #e5eaf0;
-        border-radius: 12px;
-        background: var(--card-bg, #fff);
-        box-shadow: 0 3px 10px rgba(15, 23, 42, 0.04);
-      }
-
-      .parking-area-heading {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 7px;
-        padding: 8px 4px;
-        margin-bottom: 9px;
+        gap: 6px;
+        padding: 6px 4px;
+        margin-bottom: 8px;
         border-radius: 8px;
         background: var(--area-tint, #f1f5f9);
       }
@@ -365,7 +311,8 @@
       .parking-area-heading h3 {
         margin: 0;
         font-size: 13px;
-        color: #172b4d;
+        font-weight: 700;
+        color: #1e293b;
         text-align: center;
       }
 
@@ -373,21 +320,22 @@
         display: inline-flex;
         justify-content: center;
         align-items: center;
-        padding: 4px 7px;
+        padding: 3px 8px;
         border-radius: 20px;
         color: #fff;
-        font-size: 9px;
+        font-size: 9.5px;
         font-weight: 700;
+        letter-spacing: 0.2px;
         white-space: nowrap;
       }
 
       .parking-status.available {
-        background: #16b978;
+        background: #10b981;
       }
 
       .parking-status.near-full {
-        background: #eab308;
-        color: #422006;
+        background: #f59e0b;
+        color: #fff;
       }
 
       .parking-status.full {
@@ -410,21 +358,22 @@
         position: relative;
         display: grid;
         place-items: center;
-        width: 72px;
-        height: 72px;
+        width: 76px;
+        height: 76px;
         flex-shrink: 0;
         border-radius: 50%;
         background: conic-gradient(
           var(--parking-color) var(--parking-percent),
           #e2e8f0 var(--parking-percent)
         );
+        transition: background 0.4s ease;
       }
 
       .parking-donut::before {
         content: "";
         position: absolute;
-        width: 52px;
-        height: 52px;
+        width: 56px;
+        height: 56px;
         border-radius: 50%;
         background: var(--card-bg, #fff);
       }
@@ -437,40 +386,102 @@
 
       .parking-donut-center strong {
         display: block;
-        font-size: 14px;
-        color: #172b4d;
+        font-size: 15px;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.1;
       }
 
       .parking-donut-center small {
-        font-size: 8px;
+        font-size: 9px;
+        font-weight: 600;
         color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
       }
 
-      .parking-area-details {
-        width: 100%;
-        min-width: 0;
-      }
-
-      .parking-detail-row {
+      /* Petunjuk interaksi hover yang ringkas dan bersih */
+      .parking-area-hint {
+        font-size: 10px;
+        color: #94a3b8;
         display: flex;
-        flex-direction: column;
         align-items: center;
-        gap: 2px;
-        padding: 5px 0;
-        border-bottom: 1px solid #edf0f4;
-        font-size: 10px;
-        text-align: center;
+        justify-content: center;
+        gap: 3px;
+        margin-top: 4px;
+        font-weight: 500;
+        transition: color 0.2s ease;
       }
 
-      .parking-detail-row span {
-        color: #64748b;
+      .parking-area-card:hover .parking-area-hint {
+        color: #2563eb;
       }
 
-      .parking-detail-row strong {
-        color: #172b4d;
-        text-align: center;
-        overflow-wrap: anywhere;
-        font-size: 10px;
+      /* TOOLTIP / HOVER CARD POPOVER */
+      .parking-area-popover {
+        position: absolute;
+        bottom: calc(100% + 10px);
+        left: 50%;
+        transform: translateX(-50%) translateY(6px);
+        width: 195px;
+        background: #0f172a;
+        color: #f8fafc;
+        padding: 12px 14px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.3),
+          0 4px 6px -4px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.2s ease,
+          transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.2s;
+        z-index: 100;
+      }
+
+      /* Panah segitiga popover */
+      .parking-area-popover::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 6px;
+        border-style: solid;
+        border-color: #0f172a transparent transparent transparent;
+      }
+
+      .parking-area-card:hover .parking-area-popover {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .popover-header {
+        font-size: 11px;
+        font-weight: 700;
+        color: #93c5fd;
+        border-bottom: 1px solid #334155;
+        padding-bottom: 6px;
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .popover-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 11px;
+        padding: 3px 0;
+      }
+
+      .popover-row span {
+        color: #94a3b8;
+      }
+
+      .popover-row strong {
+        font-weight: 700;
       }
 
       /* JUDUL DIAGRAM DAN TOMBOL */
@@ -484,28 +495,6 @@
 
       .parking-dashboard-heading .table-title {
         margin-bottom: 5px;
-      }
-
-      /* DENAH DAN DIAGRAM BATANG */
-      .dashboard-lower {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        gap: 16px;
-        align-items: stretch;
-      }
-
-      .dashboard-lower > .card {
-        min-width: 0;
-        height: 100%;
-        min-height: 0;
-        box-sizing: border-box;
-        overflow: hidden;
-      }
-
-      .dashboard-lower > .card:first-child,
-      .dashboard-lower > .card:nth-child(2) {
-        display: flex;
-        flex-direction: column;
       }
 
       .area-map-small {
@@ -572,7 +561,7 @@
         background: var(--area-g);
       }
 
-      /* GRAFIK BATANG - AREA A-G RATA DAN SKALA 0-30 */
+      /* GRAFIK BATANG */
       #capacityChart.bar-chart {
         width: 100%;
         min-width: 0;
@@ -675,7 +664,7 @@
         width: 26px;
         max-width: 70%;
         min-height: 0;
-        border-radius: 2px 2px 0 0;
+        border-radius: 5px 5px 0 0;
         transition: height 0.3s ease;
       }
 
@@ -736,6 +725,261 @@
         border-radius: 50%;
       }
 
+      /* ANALITIK KPI DAN MATRIKS */
+      .analytics-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+      .analytics-filter {
+        min-width: 150px;
+        padding: 8px 12px;
+        border: 1px solid var(--border, #e5e7eb);
+        border-radius: 8px;
+        background: var(--card-bg, #fff);
+        color: var(--text-color, #172033);
+      }
+      .analytics-kpis {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin: 12px 0 14px;
+      }
+      .analytics-kpi {
+        min-width: 0;
+        padding: 12px 14px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .analytics-kpi:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px -2px rgba(15, 23, 42, 0.05);
+      }
+      .analytics-kpi-label {
+        display: block;
+        color: #64748b;
+        font-size: 10.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+      }
+      .analytics-kpi strong {
+        display: block;
+        margin: 4px 0 2px;
+        color: #0f172a;
+        font-size: 22px;
+        font-weight: 800;
+        line-height: 1.15;
+      }
+      .analytics-kpi small {
+        display: block;
+        color: #64748b;
+        font-size: 10.5px;
+        line-height: 1.35;
+      }
+      .analytics-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 12px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .analytics-panel {
+        min-width: 0;
+        padding: 14px 16px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background: var(--card-bg, #fff);
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.02);
+      }
+      .analytics-panel-wide {
+        grid-column: 1 / -1;
+        width: 100%;
+        max-width: none;
+        box-sizing: border-box;
+      }
+      .analytics-panel h3 {
+        margin: 0 0 3px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+      .analytics-panel-subtitle {
+        margin: 0 0 10px;
+        color: #64748b;
+        font-size: 10.5px;
+      }
+      .analytics-line-chart {
+        width: 100%;
+        min-height: 190px;
+        overflow-x: auto;
+      }
+      .analytics-line-svg {
+        width: 100%;
+        min-width: 520px;
+        height: 200px;
+        display: block;
+      }
+      .analytics-chart {
+        display: flex;
+        align-items: flex-end;
+        gap: 9px;
+        min-height: 190px;
+        padding: 12px 4px 24px;
+        overflow-x: auto;
+      }
+      .analytics-bar-item {
+        flex: 1 0 34px;
+        min-width: 34px;
+        height: 155px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        position: relative;
+      }
+      .analytics-bar-value {
+        font-size: 10px;
+        color: #475569;
+        margin-bottom: 5px;
+        white-space: nowrap;
+      }
+      .analytics-bar {
+        width: min(28px, 70%);
+        min-height: 2px;
+        border-radius: 5px 5px 0 0;
+        background: #4798f5;
+      }
+      .analytics-bar-label {
+        position: absolute;
+        top: calc(100% + 7px);
+        font-size: 10px;
+        color: #64748b;
+        white-space: nowrap;
+      }
+      .analytics-matrix-wrap {
+        overflow-x: auto;
+      }
+      .analytics-matrix {
+        display: grid;
+        grid-template-columns: 52px repeat(11, minmax(38px, 1fr));
+        gap: 5px;
+        min-width: 540px;
+        align-items: center;
+      }
+      .matrix-head,
+      .matrix-row-label {
+        font-size: 10px;
+        color: #64748b;
+        text-align: center;
+        padding: 5px 2px;
+        font-weight: 600;
+      }
+      .matrix-row-label {
+        text-align: left;
+      }
+      .matrix-cell {
+        min-height: 30px;
+        display: grid;
+        place-items: center;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 600;
+        color: #334155;
+        background: #f1f5f9;
+        transition: transform 0.15s ease;
+      }
+      .matrix-cell:hover {
+        transform: scale(1.08);
+        z-index: 2;
+      }
+      .matrix-low {
+        background: #dcfce7;
+        color: #166534;
+      }
+      .matrix-mid {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .matrix-high {
+        background: #fed7aa;
+        color: #9a3412;
+      }
+      .matrix-max {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .analytics-area-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 12px;
+      }
+      .analytics-area-table th {
+        background: #f8fafc;
+        color: #475569;
+        font-weight: 700;
+        padding: 10px 12px;
+        border-bottom: 2px solid #e2e8f0;
+        text-align: left;
+        white-space: nowrap;
+      }
+      .analytics-area-table th:first-child {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+      }
+      .analytics-area-table th:last-child {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+      }
+      .analytics-area-table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #f1f5f9;
+        text-align: left;
+      }
+      .analytics-area-table tr:hover td {
+        background: #f8fafc;
+      }
+      .analytics-progress {
+        min-width: 70px;
+        height: 7px;
+        border-radius: 8px;
+        background: #e2e8f0;
+        overflow: hidden;
+      }
+      .analytics-progress span {
+        display: block;
+        height: 100%;
+        border-radius: 8px;
+        background: #059669;
+      }
+      .analytics-insight {
+        margin-top: 14px;
+        padding: 14px 16px;
+        border-radius: 10px;
+        background: #eff6ff;
+        color: #1e40af;
+        font-size: 12px;
+      }
+      .analytics-insight p {
+        margin: 5px 0 0;
+        line-height: 1.6;
+      }
+      .analytics-empty {
+        padding: 24px 12px;
+        color: #64748b;
+        text-align: center;
+        font-size: 12px;
+        width: 100%;
+      }
+
       /* RESPONSIVE */
       @media (max-width: 1100px) {
         .dashboard-summary {
@@ -744,6 +988,15 @@
 
         .parking-area-grid {
           grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 900px) {
+        .analytics-kpis {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .analytics-grid {
+          grid-template-columns: 1fr;
         }
       }
 
@@ -762,6 +1015,19 @@
 
         .parking-area-grid {
           grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 560px) {
+        .analytics-kpis {
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        }
+        .analytics-kpi {
+          padding: 11px;
+        }
+        .analytics-kpi strong {
+          font-size: 19px;
         }
       }
 
@@ -803,7 +1069,6 @@
       }
     </style>
   </head>
-
   <body data-protected="true">
     <!-- SIDEBAR -->
     <aside class="sidebar">
@@ -855,51 +1120,206 @@
       <h1 class="page-title">Dashboard</h1>
       <p class="subtitle">Monitoring kondisi parkir secara real-time.</p>
 
-      <!-- EMPAT KARTU RINGKASAN -->
+      <!-- EMPAT KARTU RINGKASAN KONDISI SAAT INI -->
       <div class="dashboard-summary">
         <div class="summary-card">
-          <div class="summary-icon blue">P</div>
-          <div>
-            <div class="summary-label">Total Kapasitas</div>
-            <div class="summary-value">
-              <span id="capacityCount">-</span>
-              <span class="summary-unit">slot</span>
-            </div>
+          <div class="summary-card-header">
+            <div class="summary-icon blue">▦</div>
+            <span class="summary-badge blue" id="areaActiveBadge">7 Area</span>
+          </div>
+          <div class="summary-label">Total Kapasitas Parkir</div>
+          <div class="summary-value">
+            <span id="capacityCount">-</span>
+            <span class="summary-unit">slot</span>
+          </div>
+          <div class="summary-footer-text">Kapasitas total area terdaftar</div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-card-header">
+            <div class="summary-icon green">🚗</div>
+            <span class="summary-badge green" id="occupiedRateBadge"
+              >0% terisi</span
+            >
+          </div>
+          <div class="summary-label">Kendaraan Terisi Saat Ini</div>
+          <div class="summary-value">
+            <span id="occupiedCount" style="color: #059669">-</span>
+            <span class="summary-unit">kendaraan</span>
+          </div>
+          <div class="summary-mini-progress">
+            <div
+              class="mini-bar-fill green"
+              id="occupiedFillBar"
+              style="width: 0%"
+            ></div>
           </div>
         </div>
 
         <div class="summary-card">
-          <div class="summary-icon green">P</div>
-          <div>
-            <div class="summary-label">Total Terisi</div>
-            <div class="summary-value">
-              <span id="occupiedCount">-</span>
-              <span class="summary-unit">kendaraan</span>
-            </div>
+          <div class="summary-card-header">
+            <div class="summary-icon orange">✓</div>
+            <span class="summary-badge orange" id="availableRateBadge"
+              >0% kosong</span
+            >
+          </div>
+          <div class="summary-label">Slot Tersedia Saat Ini</div>
+          <div class="summary-value">
+            <span id="availableCount" style="color: #0284c7">-</span>
+            <span class="summary-unit">slot</span>
+          </div>
+          <div class="summary-mini-progress">
+            <div
+              class="mini-bar-fill blue"
+              id="availableFillBar"
+              style="width: 0%"
+            ></div>
           </div>
         </div>
 
         <div class="summary-card">
-          <div class="summary-icon orange">P</div>
-          <div>
-            <div class="summary-label">Total Tersedia</div>
-            <div class="summary-value">
-              <span id="availableCount">-</span>
-              <span class="summary-unit">slot</span>
-            </div>
+          <div class="summary-card-header">
+            <div class="summary-icon purple">◷</div>
+            <span class="status-pulse-dot" id="statusPulseDot"></span>
           </div>
-        </div>
-
-        <div class="summary-card">
-          <div class="summary-icon purple">◷</div>
-          <div>
-            <div class="summary-label">Status Keseluruhan</div>
-            <div class="summary-status no-data" id="overallStatus">
-              Memuat...
-            </div>
+          <div class="summary-label">Status Keseluruhan</div>
+          <div class="summary-status no-data" id="overallStatus">Memuat...</div>
+          <div class="summary-footer-text" id="statusDescription">
+            Kondisi real-time area
           </div>
         </div>
       </div>
+
+      <!-- ANALITIK KPI DAN MATRIKS -->
+      <section class="card analytics-section" id="dashboardAnalytics">
+        <div class="analytics-toolbar">
+          <div>
+            <h2 class="table-title">Analitik dan Performa Parkir</h2>
+            <p class="muted">
+              Ringkasan akumulasi, tren mingguan dan bulanan, serta matriks
+              okupansi.
+            </p>
+          </div>
+
+          <select
+            id="analyticsRange"
+            class="analytics-filter"
+            aria-label="Pilih periode analitik"
+          >
+            <option value="30">30 hari terakhir</option>
+            <option value="90">90 hari terakhir</option>
+            <option value="180" selected>6 bulan terakhir</option>
+            <option value="365">1 tahun terakhir</option>
+          </select>
+        </div>
+
+        <!-- KPI ANALITIK -->
+        <div class="analytics-kpis">
+          <article class="analytics-kpi">
+            <span class="analytics-kpi-label" id="weeklyAccumulationLabel">
+              Akumulasi Snapshot Periode Ini
+            </span>
+            <strong id="weeklyAccumulation">—</strong>
+            <small id="weeklyComparison">
+              Jumlah kendaraan terpantau pada periode terpilih
+            </small>
+          </article>
+
+          <article class="analytics-kpi">
+            <span class="analytics-kpi-label" id="monthlyAccumulationLabel">
+              Rata-rata Akumulasi Mingguan
+            </span>
+            <strong id="monthlyAccumulation">—</strong>
+            <small id="monthlyComparison">
+              Rata-rata kendaraan per minggu dalam periode
+            </small>
+          </article>
+
+          <article class="analytics-kpi">
+            <span class="analytics-kpi-label" id="monthlyOccupancyLabel">
+              Rata-rata Okupansi Periode Ini
+            </span>
+            <strong id="monthlyOccupancy">—</strong>
+            <small id="monthlyOccupancySub">
+              Rata-rata persentase keterisian area
+            </small>
+          </article>
+
+          <article class="analytics-kpi">
+            <span class="analytics-kpi-label">Jam Paling Ramai</span>
+            <strong id="peakHour">—</strong>
+            <small id="peakHourDetail">
+              Berdasarkan rata-rata kendaraan per jam
+            </small>
+          </article>
+        </div>
+
+        <!-- GRAFIK GARIS TREN KENDARAAN -->
+        <div class="analytics-grid">
+          <div class="analytics-panel analytics-panel-wide">
+            <h3>Tren Kendaraan Terparkir</h3>
+            <p class="analytics-panel-subtitle" id="vehicleTrendSubtitle">
+              Tren harian dari minggu paling ramai pada periode terpilih
+            </p>
+            <div id="vehicleTrendLine" class="analytics-line-chart">
+              <div class="analytics-empty">Memuat tren kendaraan...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GRAFIK MINGGUAN DAN BULANAN -->
+        <div class="analytics-grid">
+          <div class="analytics-panel">
+            <h3>Tren Parkir Mingguan</h3>
+            <p class="analytics-panel-subtitle" id="weeklyTrendSubtitle">
+              Perbandingan akumulasi kendaraan per minggu pada periode terpilih
+            </p>
+            <div class="analytics-chart" id="weeklyTrend">
+              <div class="analytics-empty">Memuat tren mingguan...</div>
+            </div>
+          </div>
+
+          <div class="analytics-panel">
+            <h3>Tren Parkir Bulanan</h3>
+            <p class="analytics-panel-subtitle" id="monthlyTrendSubtitle">
+              Perbandingan akumulasi kendaraan per bulan pada periode terpilih
+            </p>
+            <div class="analytics-chart" id="monthlyTrend">
+              <div class="analytics-empty">Memuat tren bulanan...</div>
+            </div>
+          </div>
+
+          <!-- MATRIKS PERFORMA AREA -->
+          <div class="analytics-panel">
+            <h3>Matriks Performa Area</h3>
+            <p class="analytics-panel-subtitle">
+              Akumulasi snapshot dan rata-rata okupansi tiap area pada periode
+              terpilih
+            </p>
+            <div id="areaMatrix">
+              <div class="analytics-empty">Memuat matriks area...</div>
+            </div>
+          </div>
+
+          <!-- MATRIKS HARI DAN JAM -->
+          <div class="analytics-panel">
+            <h3>Matriks Hari dan Jam</h3>
+            <p class="analytics-panel-subtitle">
+              Rata-rata okupansi menurut hari dan jam berdasarkan riwayat yang
+              tersedia
+            </p>
+            <div class="analytics-matrix-wrap" id="timeMatrix">
+              <div class="analytics-empty">Memuat matriks waktu...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- INSIGHT -->
+        <div class="analytics-insight" id="parkingInsights">
+          <b>Insight sistem</b>
+          <p>Insight akan ditampilkan setelah riwayat tersedia.</p>
+        </div>
+      </section>
 
       <!-- KONDISI AREA PARKIR -->
       <section class="card parking-dashboard-card">
@@ -998,19 +1418,23 @@
       </section>
 
       <!-- RIWAYAT PARKIR -->
-      <section class="card" style="margin-top: 24px">
+      <section class="card" style="margin-top: 16px">
         <div class="table-head">
           <div>
             <h2 class="table-title">Tabel Riwayat Kondisi Parkir</h2>
             <p class="muted">Riwayat perubahan kondisi parkir setiap area.</p>
           </div>
 
-          <a href="/riwayat.html" class="btn btn-outline"> Lihat Riwayat </a>
+          <a href="/riwayat.html" class="btn btn-outline">
+            Lihat Riwayat Lengkap
+          </a>
         </div>
 
-        <div class="table-wrap" style="max-height: 290px; overflow-y: auto;">
+        <div class="table-wrap" style="max-height: 290px; overflow-y: auto">
           <table>
-            <thead style="position: sticky; top: 0; background: #fff; z-index: 2;">
+            <thead
+              style="position: sticky; top: 0; background: #fff; z-index: 2"
+            >
               <tr>
                 <th>No.</th>
                 <th>Tanggal</th>
@@ -1036,7 +1460,7 @@
       </section>
 
       <!-- INFORMASI AREA DAN KAPASITAS -->
-      <section class="card" style="margin-top: 24px">
+      <section class="card" style="margin-top: 16px">
         <div class="table-head">
           <div>
             <h2 class="table-title">Kelola Area dan Kapasitas</h2>
@@ -1050,21 +1474,25 @@
           </a>
         </div>
 
-        <div class="table-wrap" style="max-height: 290px; overflow-y: auto;">
+        <div class="table-wrap" style="max-height: 290px; overflow-y: auto">
           <table>
-            <thead style="position: sticky; top: 0; background: #fff; z-index: 2;">
+            <thead
+              style="position: sticky; top: 0; background: #fff; z-index: 2"
+            >
               <tr>
                 <th>Area</th>
                 <th>ID</th>
                 <th>Kapasitas</th>
-                <th>Nama</th>
+                <th>Terisi</th>
+                <th>Tersedia</th>
+                <th>Keterisian</th>
                 <th>Status Area</th>
               </tr>
             </thead>
 
             <tbody id="dashboardSlotRows">
               <tr>
-                <td colspan="5">Memuat data area...</td>
+                <td colspan="7">Memuat data area...</td>
               </tr>
             </tbody>
           </table>
@@ -1086,7 +1514,7 @@
     <script src="/auth.js"></script>
     <script src="/app.js"></script>
 
-    <!-- FUNGSI DIAGRAM DONAT DASHBOARD -->
+    <!-- FUNGSI DIAGRAM DONAT & RINGKASAN DASHBOARD -->
     <script>
       window.renderDonuts = function (areas, containerId = "donutCharts") {
         const container = document.getElementById(containerId);
@@ -1161,9 +1589,31 @@
         const availableEl = document.getElementById("availableCount");
         const overallEl = document.getElementById("overallStatus");
 
+        const occPct =
+          totalCapacity > 0
+            ? Math.min(100, Math.round((totalOccupied / totalCapacity) * 100))
+            : 0;
+        const availPct = Math.max(0, 100 - occPct);
+
+        const occBadge = document.getElementById("occupiedRateBadge");
+        const availBadge = document.getElementById("availableRateBadge");
+        const areaBadge = document.getElementById("areaActiveBadge");
+        const occBar = document.getElementById("occupiedFillBar");
+        const availBar = document.getElementById("availableFillBar");
+        const statusDesc = document.getElementById("statusDescription");
+
         if (capacityEl) capacityEl.textContent = totalCapacity;
         if (occupiedEl) occupiedEl.textContent = totalOccupied;
         if (availableEl) availableEl.textContent = totalAvailable;
+
+        if (occBadge) occBadge.textContent = `${occPct}% terisi`;
+        if (availBadge) availBadge.textContent = `${availPct}% kosong`;
+        if (areaBadge)
+          areaBadge.textContent = `${validAreas.length} Area Aktif`;
+        if (occBar) occBar.style.width = `${occPct}%`;
+        if (availBar) availBar.style.width = `${availPct}%`;
+        if (statusDesc)
+          statusDesc.textContent = `${totalOccupied} dari ${totalCapacity} slot terisi (${occPct}%)`;
 
         /* Status keseluruhan */
         if (overallEl) {
@@ -1264,7 +1714,18 @@
             }
 
             return `
-          <article class="parking-area-card" tabindex="0" aria-label="${esc(label)}: ${valid ? pct + "% terisi, " + occupied + " kendaraan dari " + capacity + " slot" : "Belum ada data"}">
+          <article class="parking-area-card" tabindex="0" aria-label="${esc(
+            label
+          )}: ${
+              valid
+                ? pct +
+                  "% terisi, " +
+                  occupied +
+                  " kendaraan dari " +
+                  capacity +
+                  " slot"
+                : "Belum ada data"
+            }">
             <div
               class="parking-area-heading"
               style="--area-tint:${areaColor}22"
@@ -1298,11 +1759,15 @@
               </div>
             </div>
 
-            <!-- DETAIL HOVER POPOVER (Prinsip Level 3 on Hover) -->
+            <!-- DETAIL HOVER POPOVER -->
             <div class="parking-area-popover" role="tooltip">
               <div class="popover-header">
                 <span>Rincian ${esc(label)}</span>
-                <span class="parking-status ${status.cls}" style="font-size:8px; padding:2px 6px;">${status.label}</span>
+                <span class="parking-status ${
+                  status.cls
+                }" style="font-size:8px; padding:2px 6px;">${
+              status.label
+            }</span>
               </div>
               <div class="popover-row">
                 <span>Kapasitas:</span>
@@ -1310,11 +1775,15 @@
               </div>
               <div class="popover-row">
                 <span>Terisi:</span>
-                <strong style="color:#34d399;">${valid ? occupied + " kendaraan" : "—"}</strong>
+                <strong style="color:#34d399;">${
+                  valid ? occupied + " kendaraan" : "—"
+                }</strong>
               </div>
               <div class="popover-row">
                 <span>Tersedia:</span>
-                <strong style="color:#60a5fa;">${valid ? available + " slot" : "—"}</strong>
+                <strong style="color:#60a5fa;">${
+                  valid ? available + " slot" : "—"
+                }</strong>
               </div>
               <div class="popover-row" style="margin-top:4px; padding-top:4px; border-top:1px dashed #334155; font-size:9.5px;">
                 <span>Update:</span>
@@ -1373,8 +1842,13 @@
           })
           .sort((a, b) => a.key.localeCompare(b.key));
 
-        const chartMax = 30;
-        const tickStep = 6;
+        const maxCapacity = Math.max(
+          ...areas.map((a) => Number(a.capacity) || 0),
+          ...areas.map((a) => Number(a.occupied) || 0),
+          30
+        );
+        const chartMax = Math.ceil(maxCapacity / 10) * 10;
+        const tickStep = chartMax / 5;
 
         container.innerHTML = `
           <div class="vertical-chart-scroll">
@@ -1402,18 +1876,22 @@
                         100
                       );
 
+                      const cap = item.area?.capacity || 0;
+                      const occPct =
+                        cap > 0 ? Math.round((item.value / cap) * 100) : 0;
+
                       return `
                         <div class="chart-bar-item">
                           <div class="chart-bar-area">
                             <span
                               class="chart-bar-value"
-                              style="bottom:${height}%;"
-                            >${item.value}</span>
+                              style="bottom:${height}%; font-weight:700;"
+                            >${item.value} <small style="font-size:9px; font-weight:500; color:#64748b;">terisi</small></span>
 
                             <div
                               class="chart-bar"
-                              style="height:${height}%; background-color:${item.color};"
-                              title="${item.label}: ${item.value} kendaraan"
+                              style="height:${height}%; background-color:${item.color}; border-radius:5px 5px 0 0;"
+                              title="${item.label}: ${item.value} kendaraan terisi dari ${cap} slot (${occPct}% terisi)"
                             ></div>
                           </div>
 
@@ -1428,6 +1906,466 @@
           </div>
         `;
       };
+    </script>
+
+    <!-- ANALITIK & PERFORMA PARKIR LANGSUNG DARI API IOT (TANPA DATA DUMMY) -->
+    <script>
+      (function () {
+        const rangeSelect = document.getElementById("analyticsRange");
+
+        function parseRecordDate(record) {
+          const raw =
+            record.timestamp ||
+            record.createdAt ||
+            record.created_at ||
+            record.date;
+          if (!raw) return null;
+          if (raw instanceof Date && !Number.isNaN(raw.getTime())) return raw;
+
+          const str = String(raw).trim();
+          const timeStr = String(record.time || "00:00").trim();
+          const dmy = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+          if (dmy) {
+            const d = new Date(
+              `${dmy[3]}-${dmy[2].padStart(2, "0")}-${dmy[1].padStart(
+                2,
+                "0"
+              )}T${timeStr.slice(0, 5) || "00:00"}:00`
+            );
+            return Number.isNaN(d.getTime()) ? null : d;
+          }
+
+          const isoCandidate =
+            str.length === 10 && /^\d{4}-\d{2}-\d{2}$/.test(str)
+              ? `${str}T${timeStr.slice(0, 5) || "00:00"}:00`
+              : str;
+          const parsed = new Date(isoCandidate);
+          return Number.isNaN(parsed.getTime()) ? null : parsed;
+        }
+
+        function getWeekKey(date) {
+          const d = new Date(
+            Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+          );
+          const dayNum = d.getUTCDay() || 7;
+          d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+          const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+          const weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+          return `${d.getUTCFullYear()}-W${String(weekNo).padStart(2, "0")}`;
+        }
+
+        function renderEmptyAnalytics(msg) {
+          [
+            "weeklyAccumulation",
+            "monthlyAccumulation",
+            "monthlyOccupancy",
+            "peakHour",
+          ].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = "—";
+          });
+
+          [
+            "vehicleTrendLine",
+            "weeklyTrend",
+            "monthlyTrend",
+            "areaMatrix",
+            "timeMatrix",
+          ].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) {
+              el.innerHTML = `<div class="analytics-empty">${msg}</div>`;
+            }
+          });
+
+          const insightEl = document.getElementById("parkingInsights");
+          if (insightEl) {
+            insightEl.innerHTML = `<b>Insight sistem</b><p>${msg}</p>`;
+          }
+        }
+
+        function renderLineChart(container, points) {
+          if (!container) return;
+          if (!points.length) {
+            container.innerHTML =
+              '<div class="analytics-empty">Belum ada data harian dari sensor IoT pada periode ini.</div>';
+            return;
+          }
+
+          const width = 760;
+          const height = 190;
+          const padL = 38;
+          const padR = 24;
+          const padT = 24;
+          const padB = 34;
+          const plotW = width - padL - padR;
+          const plotH = height - padT - padB;
+          const maxVal = Math.max(...points.map((p) => p.value), 10);
+
+          const coords = points.map((p, idx) => {
+            const x =
+              points.length === 1
+                ? padL + plotW / 2
+                : padL + (idx / (points.length - 1)) * plotW;
+            const y = padT + plotH - (p.value / maxVal) * plotH;
+            return { ...p, x, y };
+          });
+
+          const polyPoints = coords.map((c) => `${c.x},${c.y}`).join(" ");
+          const areaPoints = `${coords[0].x},${padT + plotH} ${polyPoints} ${
+            coords[coords.length - 1].x
+          },${padT + plotH}`;
+
+          container.innerHTML = `
+            <svg class="analytics-line-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="trendAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.25" />
+                  <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.01" />
+                </linearGradient>
+              </defs>
+              <line x1="${padL}" y1="${padT + plotH}" x2="${
+            width - padR
+          }" y2="${padT + plotH}" stroke="#cbd5e1" stroke-width="1" />
+              <polygon points="${areaPoints}" fill="url(#trendAreaGrad)" />
+              <polyline fill="none" stroke="#2563eb" stroke-width="2.5" points="${polyPoints}" />
+              ${coords
+                .map(
+                  (c) => `
+                <circle cx="${c.x}" cy="${c.y}" r="4" fill="#2563eb" stroke="#fff" stroke-width="1.5" />
+                <text x="${c.x}" y="${c.y - 8}" text-anchor="middle" font-size="10" font-weight="700" fill="#1e293b">${c.value}</text>
+                <text x="${c.x}" y="${height - 10}" text-anchor="middle" font-size="10" fill="#64748b">${c.label}</text>
+              `
+                )
+                .join("")}
+            </svg>
+          `;
+        }
+
+        function renderBarTrend(container, items, color) {
+          if (!container) return;
+          if (!items.length) {
+            container.innerHTML =
+              '<div class="analytics-empty">Belum ada data pada periode ini.</div>';
+            return;
+          }
+          const maxVal = Math.max(...items.map((i) => i.value), 1);
+          container.innerHTML = items
+            .map((item) => {
+              const pct = Math.max(4, Math.round((item.value / maxVal) * 100));
+              return `
+                <div class="analytics-bar-item" title="${item.label}: ${item.value} kendaraan">
+                  <span class="analytics-bar-value">${item.value}</span>
+                  <div class="analytics-bar" style="height:${pct}%; background:${color};"></div>
+                  <span class="analytics-bar-label">${item.label}</span>
+                </div>
+              `;
+            })
+            .join("");
+        }
+
+        async function loadIoTAnalytics() {
+          if (typeof API === "undefined" || typeof API.history !== "function") {
+            return;
+          }
+
+          try {
+            const days = Number(rangeSelect?.value || 180);
+            const rawHistory = await API.history({});
+            const allRows = Array.isArray(rawHistory)
+              ? rawHistory
+              : Array.isArray(rawHistory?.data)
+              ? rawHistory.data
+              : [];
+
+            const cutoff = Date.now() - days * 86400000;
+            const rows = allRows
+              .map((r) => {
+                const dt = parseRecordDate(r);
+                const cap = Number(r.capacity) || 0;
+                const occ = Number(r.occupied) || 0;
+                const occRate = cap > 0 ? Math.min(100, (occ / cap) * 100) : 0;
+                return { ...r, _dt: dt, _cap: cap, _occ: occ, _rate: occRate };
+              })
+              .filter((r) => r._dt && r._dt.getTime() >= cutoff);
+
+            if (!rows.length) {
+              renderEmptyAnalytics(
+                "Belum ada data riwayat dari sensor IoT pada periode yang dipilih."
+              );
+              return;
+            }
+
+            /* 1. KPI UTAMA */
+            const totalOcc = rows.reduce((s, r) => s + r._occ, 0);
+            const avgRate = Math.round(
+              rows.reduce((s, r) => s + r._rate, 0) / rows.length
+            );
+
+            const weekMap = new Map();
+            rows.forEach((r) => {
+              const wk = getWeekKey(r._dt);
+              weekMap.set(wk, (weekMap.get(wk) || 0) + r._occ);
+            });
+            const weeklyList = Array.from(weekMap.entries())
+              .sort((a, b) => a[0].localeCompare(b[0]))
+              .map(([wk, val]) => ({
+                key: wk,
+                label: wk.split("-")[1],
+                value: val,
+              }));
+            const avgWeekly = weeklyList.length
+              ? Math.round(totalOcc / weeklyList.length)
+              : 0;
+
+            const hourMap = new Map();
+            rows.forEach((r) => {
+              const h = r._dt.getHours();
+              const cur = hourMap.get(h) || { sum: 0, count: 0 };
+              cur.sum += r._occ;
+              cur.count += 1;
+              hourMap.set(h, cur);
+            });
+
+            let peakH = null;
+            let peakAvg = -1;
+            hourMap.forEach((val, h) => {
+              const avg = val.sum / val.count;
+              if (avg > peakAvg) {
+                peakAvg = avg;
+                peakH = h;
+              }
+            });
+
+            document.getElementById("weeklyAccumulation").textContent =
+              totalOcc.toLocaleString("id-ID");
+            document.getElementById("monthlyAccumulation").textContent =
+              avgWeekly.toLocaleString("id-ID");
+            document.getElementById("monthlyOccupancy").textContent =
+              `${avgRate}%`;
+            document.getElementById("peakHour").textContent =
+              peakH !== null
+                ? `${String(peakH).padStart(2, "0")}:00 WIB`
+                : "—";
+            document.getElementById("peakHourDetail").textContent =
+              peakH !== null
+                ? `Rata-rata ${Math.round(peakAvg)} kendaraan per snapshot`
+                : "Berdasarkan rata-rata kendaraan per jam";
+
+            /* 2. GRAFIK GARIS TREN HARIAN (7 HARI TERAKHIR DARI DATA IOT) */
+            const dayNames = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+            const dayMap = new Map();
+            rows.forEach((r) => {
+              const isoDay = r._dt.toISOString().slice(0, 10);
+              const cur = dayMap.get(isoDay) || {
+                sum: 0,
+                count: 0,
+                dayIdx: r._dt.getDay(),
+              };
+              cur.sum += r._occ;
+              cur.count += 1;
+              dayMap.set(isoDay, cur);
+            });
+            const dailyPoints = Array.from(dayMap.entries())
+              .sort((a, b) => a[0].localeCompare(b[0]))
+              .slice(-7)
+              .map(([iso, info]) => ({
+                label: `${dayNames[info.dayIdx]} (${iso.slice(8, 10)}/${iso.slice(
+                  5,
+                  7
+                )})`,
+                value: Math.round(info.sum / info.count),
+              }));
+            renderLineChart(
+              document.getElementById("vehicleTrendLine"),
+              dailyPoints
+            );
+
+            /* 3. TREN MINGGUAN & BULANAN */
+            renderBarTrend(
+              document.getElementById("weeklyTrend"),
+              weeklyList.slice(-8),
+              "#4798f5"
+            );
+
+            const monthNames = [
+              "Jan",
+              "Feb",
+              "Mar",
+              "Apr",
+              "Mei",
+              "Jun",
+              "Jul",
+              "Agu",
+              "Sep",
+              "Okt",
+              "Nov",
+              "Des",
+            ];
+            const monthMap = new Map();
+            rows.forEach((r) => {
+              const mk = `${r._dt.getFullYear()}-${String(
+                r._dt.getMonth() + 1
+              ).padStart(2, "0")}`;
+              monthMap.set(mk, (monthMap.get(mk) || 0) + r._occ);
+            });
+            const monthlyList = Array.from(monthMap.entries())
+              .sort((a, b) => a[0].localeCompare(b[0]))
+              .slice(-12)
+              .map(([mk, val]) => {
+                const mIdx = Number(mk.split("-")[1]) - 1;
+                return { label: monthNames[mIdx] || mk, value: val };
+              });
+            renderBarTrend(
+              document.getElementById("monthlyTrend"),
+              monthlyList,
+              "#10b981"
+            );
+
+            /* 4. MATRIKS PERFORMA AREA */
+            const areaMap = new Map();
+            rows.forEach((r) => {
+              const name = String(r.area || "Lainnya").trim();
+              const cur = areaMap.get(name) || {
+                totalOcc: 0,
+                rateSum: 0,
+                count: 0,
+              };
+              cur.totalOcc += r._occ;
+              cur.rateSum += r._rate;
+              cur.count += 1;
+              areaMap.set(name, cur);
+            });
+            const areaStats = Array.from(areaMap.entries())
+              .map(([name, info]) => ({
+                name,
+                totalOcc: info.totalOcc,
+                avgRate: Math.round(info.rateSum / info.count),
+              }))
+              .sort((a, b) => a.name.localeCompare(b.name));
+
+            const areaMatrixEl = document.getElementById("areaMatrix");
+            if (areaMatrixEl) {
+              areaMatrixEl.innerHTML = `
+                <table class="analytics-area-table">
+                  <thead>
+                    <tr>
+                      <th>Area</th>
+                      <th>Akumulasi</th>
+                      <th>Rata-rata Okupansi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${areaStats
+                      .map(
+                        (a) => `
+                      <tr>
+                        <td><b>${a.name}</b></td>
+                        <td>${a.totalOcc.toLocaleString("id-ID")}</td>
+                        <td>
+                          <div style="display:flex;align-items:center;gap:8px;">
+                            <div class="analytics-progress">
+                              <span style="width:${a.avgRate}%;"></span>
+                            </div>
+                            <span>${a.avgRate}%</span>
+                          </div>
+                        </td>
+                      </tr>
+                    `
+                      )
+                      .join("")}
+                  </tbody>
+                </table>
+              `;
+            }
+
+            /* 5. MATRIKS HARI DAN JAM (07.00 - 17.00) */
+            const hours = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+            const orderedDays = [1, 2, 3, 4, 5, 6, 0];
+            const gridData = new Map();
+            rows.forEach((r) => {
+              const key = `${r._dt.getDay()}-${r._dt.getHours()}`;
+              const cur = gridData.get(key) || { sum: 0, count: 0 };
+              cur.sum += r._rate;
+              cur.count += 1;
+              gridData.set(key, cur);
+            });
+
+            const timeMatrixEl = document.getElementById("timeMatrix");
+            if (timeMatrixEl) {
+              let html = `<div class="analytics-matrix">`;
+              html += `<div class="matrix-head">Hari</div>`;
+              hours.forEach((h) => {
+                html += `<div class="matrix-head">${String(h).padStart(
+                  2,
+                  "0"
+                )}:00</div>`;
+              });
+
+              orderedDays.forEach((dIdx) => {
+                html += `<div class="matrix-row-label">${dayNames[dIdx]}</div>`;
+                hours.forEach((h) => {
+                  const cell = gridData.get(`${dIdx}-${h}`);
+                  if (!cell) {
+                    html += `<div class="matrix-cell">—</div>`;
+                  } else {
+                    const pct = Math.round(cell.sum / cell.count);
+                    const cls =
+                      pct >= 90
+                        ? "matrix-max"
+                        : pct >= 75
+                        ? "matrix-high"
+                        : pct >= 50
+                        ? "matrix-mid"
+                        : "matrix-low";
+                    html += `<div class="matrix-cell ${cls}" title="${dayNames[dIdx]} ${h}:00 (${pct}%)">${pct}%</div>`;
+                  }
+                });
+              });
+              html += `</div>`;
+              timeMatrixEl.innerHTML = html;
+            }
+
+            /* 6. INSIGHT SISTEM OTOMATIS DARI DATA IOT */
+            const busiestArea = [...areaStats].sort(
+              (a, b) => b.avgRate - a.avgRate
+            )[0];
+            const insightEl = document.getElementById("parkingInsights");
+            if (insightEl) {
+              insightEl.innerHTML = `
+                <b>Insight sistem</b>
+                <p>
+                  Dari <b>${rows.length.toLocaleString(
+                    "id-ID"
+                  )}</b> catatan sensor IoT dalam ${days} hari terakhir, rata-rata okupansi parkir berada di angka <b>${avgRate}%</b>${
+                busiestArea
+                  ? ` dengan tingkat kepadatan tertinggi pada <b>${busiestArea.name}</b> (${busiestArea.avgRate}%)`
+                  : ""
+              }${
+                peakH !== null
+                  ? ` dan jam tersibuk sekitar pukul <b>${String(peakH).padStart(
+                      2,
+                      "0"
+                    )}:00 WIB</b>.`
+                  : "."
+              }
+                </p>
+              `;
+            }
+          } catch (err) {
+            console.error("Gagal memuat analitik IoT:", err);
+            renderEmptyAnalytics("Gagal memuat data analitik dari server.");
+          }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+          loadIoTAnalytics();
+          if (rangeSelect) {
+            rangeSelect.addEventListener("change", loadIoTAnalytics);
+          }
+          setInterval(loadIoTAnalytics, 60000);
+        });
+      })();
     </script>
 
     <!-- MEMUAT RIWAYAT TERBARU DI DASHBOARD -->
@@ -1447,47 +2385,53 @@
             ? records.data
             : [];
 
-          body.innerHTML = rows
+          // FILTER WAKTU: HANYA PUKUL 07.00–17.00
+          const filteredRows = rows.filter((r) => {
+            const timeString = String(r.time ?? "");
+            const hour = Number(timeString.match(/^(\d{1,2})/)?.[1]);
+
+            return Number.isFinite(hour) && hour >= 7 && hour <= 17;
+          });
+
+          body.innerHTML = filteredRows
             .slice(0, 10)
             .map(
               (r, i) => `
-              <tr>
-                <td>${i + 1}</td>
-                <td>${
-                  typeof fmtDate === "function"
-                    ? fmtDate(r.date)
-                    : r.date || "-"
-                }</td>
-                <td>${r.time ?? "-"}</td>
-                <td>${r.area ?? "-"}</td>
-                <td>${r.capacity ?? "-"}</td>
-                <td>${r.occupied ?? "-"}</td>
-                <td>${r.available ?? "-"}</td>
-                <td>
-                  <span class="status ${
-                    typeof statusClass === "function"
-                      ? statusClass(r.status)
-                      : ""
-                  }">
-                    ${r.status ?? "-"}
-                  </span>
-                </td>
-                <td>${r.source ?? r.sumber ?? "-"}</td>
-              </tr>
-            `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${
+          typeof fmtDate === "function" ? fmtDate(r.date) : r.date || "-"
+        }</td>
+        <td>${r.time ?? "-"}</td>
+        <td>${r.area ?? "-"}</td>
+        <td>${r.capacity ?? "-"}</td>
+        <td>${r.occupied ?? "-"}</td>
+        <td>${r.available ?? "-"}</td>
+        <td>
+          <span class="status ${
+            typeof statusClass === "function" ? statusClass(r.status) : ""
+          }">
+            ${r.status ?? "-"}
+          </span>
+        </td>
+        <td>${r.source ?? r.sumber ?? "-"}</td>
+      </tr>
+    `
             )
             .join("");
 
           if (empty) {
-            empty.style.display = rows.length ? "none" : "block";
+            empty.style.display = filteredRows.length ? "none" : "block";
           }
 
-          if (!rows.length) {
+          if (!filteredRows.length) {
             body.innerHTML = `
-            <tr>
-              <td colspan="9">Tidak ada data riwayat parkir.</td>
-            </tr>
-          `;
+    <tr>
+      <td colspan="9">
+        Tidak ada riwayat parkir pukul 07.00–17.00.
+      </td>
+    </tr>
+  `;
           }
         } catch (error) {
           console.error("Riwayat Dashboard gagal dimuat:", error);
@@ -1524,7 +2468,7 @@
           if (rows.length === 0) {
             tbody.innerHTML = `
             <tr>
-              <td colspan="5">Belum ada data area parkir.</td>
+              <td colspan="7">Belum ada data area parkir.</td>
             </tr>
           `;
             return;
@@ -1535,13 +2479,29 @@
               const active = area.enabled !== false;
               const statusText = active ? "Aktif" : "Nonaktif";
               const statusClassName = active ? "badge-success" : "badge-danger";
+              const cap = Number(area.capacity) || 0;
+              const occ = Number(area.occupied) || 0;
+              const avail = Math.max(0, cap - occ);
+              const pct =
+                cap > 0 ? Math.min(100, Math.round((occ / cap) * 100)) : 0;
+              const barColor =
+                pct >= 95 ? "#ef4444" : pct >= 80 ? "#eab308" : "#10b981";
 
               return `
               <tr>
-                <td>${area.name || `Area ${area.id}`}</td>
-                <td>${area.id ?? "-"}</td>
-                <td>${area.capacity ?? 0} slot</td>
-                <td>${area.name ?? "-"}</td>
+                <td><b>${area.name || `Area ${area.id}`}</b></td>
+                <td><span class="area-id-pill">${area.id ?? "-"}</span></td>
+                <td>${cap} slot</td>
+                <td><strong style="color:#059669; font-weight:700;">${occ} </strong></td>
+                <td><strong style="color:#0284c7; font-weight:700;">${avail} </strong></td>
+                <td>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="analytics-progress" style="width:75px; height:7px;">
+                      <span style="width:${pct}%; background:${barColor};"></span>
+                    </div>
+                    <span style="font-weight:700; font-size:11px; color:${barColor};">${pct}%</span>
+                  </div>
+                </td>
                 <td>
                   <span class="badge ${statusClassName}">
                     ${statusText}
@@ -1556,17 +2516,14 @@
 
           tbody.innerHTML = `
           <tr>
-            <td colspan="5">Data area gagal dimuat.</td>
+            <td colspan="7">Data area gagal dimuat.</td>
           </tr>
         `;
         }
       }
 
       document.addEventListener("DOMContentLoaded", () => {
-        // Memuat data pertama kali
         loadDashboardSlots();
-
-        // Memperbarui data setiap 1 menit
         setInterval(loadDashboardSlots, 60000);
       });
     </script>
