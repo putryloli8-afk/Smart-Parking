@@ -17,6 +17,222 @@
         --area-g: #ff7188;
       }
 
+      
+      /* RINGKAS & INTERAKTIF HOVER */
+      .dashboard-summary {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin: 14px 0 16px;
+      }
+
+      .summary-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+        padding: 12px 14px;
+        background: var(--card-bg, #fff);
+        border: 1px solid var(--border, #e5e7eb);
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .summary-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+      }
+
+      .summary-icon {
+        width: 36px;
+        height: 36px;
+        flex: 0 0 36px;
+        display: grid;
+        place-items: center;
+        border-radius: 10px;
+        font-size: 18px;
+      }
+
+      .summary-label {
+        color: #64748b;
+        font-size: 11px;
+        margin-bottom: 2px;
+        font-weight: 600;
+      }
+
+      .summary-value {
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--text-color, #172033);
+        line-height: 1.15;
+      }
+
+      .parking-dashboard-card {
+        margin-bottom: 14px;
+        padding: 14px 16px;
+      }
+
+      .parking-area-grid {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .parking-area-card {
+        position: relative;
+        min-width: 0;
+        padding: 10px 8px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background: var(--card-bg, #fff);
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      }
+
+      .parking-area-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
+        border-color: #cbd5e1;
+        z-index: 20;
+      }
+
+      .parking-area-heading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 3px;
+        margin-bottom: 6px;
+        border-radius: 7px;
+        background: var(--area-tint, #f1f5f9);
+      }
+
+      .parking-area-heading h3 {
+        margin: 0;
+        font-size: 12.5px;
+        font-weight: 700;
+        color: #1e293b;
+        text-align: center;
+      }
+
+      .parking-donut {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: 68px;
+        height: 68px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: conic-gradient(
+          var(--parking-color) var(--parking-percent),
+          #e2e8f0 var(--parking-percent)
+        );
+      }
+
+      .parking-donut::before {
+        content: "";
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--card-bg, #fff);
+      }
+
+      .parking-donut-center strong {
+        display: block;
+        font-size: 14px;
+        font-weight: 800;
+        color: #0f172a;
+      }
+
+      .parking-donut-center small {
+        font-size: 8.5px;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+      }
+
+      .parking-area-hint {
+        font-size: 9.5px;
+        color: #94a3b8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 4px;
+        font-weight: 500;
+      }
+
+      .parking-area-card:hover .parking-area-hint {
+        color: #2563eb;
+      }
+
+      /* POPOVER HOVER INTERAKTIF */
+      .parking-area-popover {
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%) translateY(6px);
+        width: 190px;
+        background: #0f172a;
+        color: #f8fafc;
+        padding: 10px 12px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+        z-index: 100;
+      }
+
+      .parking-area-popover::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 6px;
+        border-style: solid;
+        border-color: #0f172a transparent transparent transparent;
+      }
+
+      .parking-area-card:hover .parking-area-popover {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .popover-header {
+        font-size: 11px;
+        font-weight: 700;
+        color: #93c5fd;
+        border-bottom: 1px solid #334155;
+        padding-bottom: 5px;
+        margin-bottom: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .popover-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 10.5px;
+        padding: 2.5px 0;
+      }
+
+      .popover-row span {
+        color: #94a3b8;
+      }
+
+      .popover-row strong {
+        font-weight: 700;
+      }
+
       /* EMPAT KARTU RINGKASAN */
       .dashboard-summary {
         display: grid;
@@ -792,9 +1008,9 @@
           <a href="/riwayat.html" class="btn btn-outline"> Lihat Riwayat </a>
         </div>
 
-        <div class="table-wrap">
+        <div class="table-wrap" style="max-height: 290px; overflow-y: auto;">
           <table>
-            <thead>
+            <thead style="position: sticky; top: 0; background: #fff; z-index: 2;">
               <tr>
                 <th>No.</th>
                 <th>Tanggal</th>
@@ -834,9 +1050,9 @@
           </a>
         </div>
 
-        <div class="table-wrap">
+        <div class="table-wrap" style="max-height: 290px; overflow-y: auto;">
           <table>
-            <thead>
+            <thead style="position: sticky; top: 0; background: #fff; z-index: 2;">
               <tr>
                 <th>Area</th>
                 <th>ID</th>
@@ -1048,7 +1264,7 @@
             }
 
             return `
-          <article class="parking-area-card">
+          <article class="parking-area-card" tabindex="0" aria-label="${esc(label)}: ${valid ? pct + "% terisi, " + occupied + " kendaraan dari " + capacity + " slot" : "Belum ada data"}">
             <div
               class="parking-area-heading"
               style="--area-tint:${areaColor}22"
@@ -1077,26 +1293,32 @@
                 </div>
               </div>
 
-              <div class="parking-area-details">
-                <div class="parking-detail-row">
-                  <span>Kapasitas</span>
-                  <strong>${valid ? capacity + " slot" : "—"}</strong>
-                </div>
+              <div class="parking-area-hint">
+                <span>ℹ Arahkan kursor</span>
+              </div>
+            </div>
 
-                <div class="parking-detail-row">
-                  <span>Terisi</span>
-                  <strong>${valid ? occupied + " kendaraan" : "—"}</strong>
-                </div>
-
-                <div class="parking-detail-row">
-                  <span>Tersedia</span>
-                  <strong>${valid ? available + " slot" : "—"}</strong>
-                </div>
-
-                <div class="parking-detail-row">
-                  <span>Update terakhir</span>
-                  <strong>${updated}</strong>
-                </div>
+            <!-- DETAIL HOVER POPOVER (Prinsip Level 3 on Hover) -->
+            <div class="parking-area-popover" role="tooltip">
+              <div class="popover-header">
+                <span>Rincian ${esc(label)}</span>
+                <span class="parking-status ${status.cls}" style="font-size:8px; padding:2px 6px;">${status.label}</span>
+              </div>
+              <div class="popover-row">
+                <span>Kapasitas:</span>
+                <strong>${valid ? capacity + " slot" : "—"}</strong>
+              </div>
+              <div class="popover-row">
+                <span>Terisi:</span>
+                <strong style="color:#34d399;">${valid ? occupied + " kendaraan" : "—"}</strong>
+              </div>
+              <div class="popover-row">
+                <span>Tersedia:</span>
+                <strong style="color:#60a5fa;">${valid ? available + " slot" : "—"}</strong>
+              </div>
+              <div class="popover-row" style="margin-top:4px; padding-top:4px; border-top:1px dashed #334155; font-size:9.5px;">
+                <span>Update:</span>
+                <span style="color:#cbd5e1;">${updated}</span>
               </div>
             </div>
           </article>
